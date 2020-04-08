@@ -1,6 +1,6 @@
 module Main where
 
-import Lib
+import Lab1
 
-main :: IO ()
-main = someFunc
+main :: IO () 
+main = print smallest_k_sets
