@@ -2,18 +2,22 @@ module Lab1
     ( smallest_k_sets
     ) where
 
-smallest_k_sets :: (Integral a) => [a]
-smallest_k_sets = result
+smallest_k_sets :: [(Int, Int, Int, [Int])]
+smallest_k_sets = subsets list
 
-list :: (Integral a) => [a]
+list :: [Int]
 list = [-1, 2, -3, 4, -5]
+--list = [-1]
 
-result :: (Integral a) => [a]
-result = msort list
+subsets :: [(Int, Int, Int, [Int])] -> [(Int, Int, Int, [Int])]
+subsets list
+  | length list==1 = [(sum list, 1, length list, list)] 
+  | otherwise = subsets [(sum list, head list, length list - 1, list)]
 
-msort :: Ord a => [a] -> [a]
-msort [] = []
-msort xs = go [[x] | x <- xs]
+
+merge_sort :: Ord a => [a] -> [a]
+merge_sort [] = []
+merge_sort xs = go [[x] | x <- xs]
     where
     go [a] = a
     go xs = go (pairs xs)
