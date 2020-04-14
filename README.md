@@ -21,6 +21,16 @@ stack build
 stack exec my-project-exe
 ```
 
+run project 
+```
+stack build && stack exec my-project-exe
+```
+
+format code
+```
+stack install hfmt
+```
+
 ## Authors
 * Viktor From - vikfro-@student.ltu.se - [viktorfrom](https://github.com/viktorfrom)
 
