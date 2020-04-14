@@ -3,14 +3,14 @@ module Lab1
     ) where
 
 smallest_k_sets :: [Int]
-smallest_k_sets quick_sort list
--- smallest_k_sets list
---    | length list==1 = quick_sort list
---    | otherwise = quick_sort list
+smallest_k_sets
+  | length list==0 = error("Invalid input: list is empty")
+  | otherwise = quick_sort list
 
 list :: [Int]
 list = [-1, 2, -3, 4, -5]
 --list = [-1]
+--list = []
 
 -- subsets :: [(Int, Int, Int, [Int])] -> [(Int, Int, Int, [Int])]
 -- subsets list
