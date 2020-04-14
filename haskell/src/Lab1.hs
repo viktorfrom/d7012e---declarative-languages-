@@ -2,30 +2,25 @@ module Lab1
     ( smallest_k_sets
     ) where
 
-smallest_k_sets :: [(Int, Int, Int, [Int])]
-smallest_k_sets = subsets list
+smallest_k_sets :: [Int]
+smallest_k_sets quick_sort list
+-- smallest_k_sets list
+--    | length list==1 = quick_sort list
+--    | otherwise = quick_sort list
 
 list :: [Int]
 list = [-1, 2, -3, 4, -5]
 --list = [-1]
 
-subsets :: [(Int, Int, Int, [Int])] -> [(Int, Int, Int, [Int])]
-subsets list
-  | length list==1 = [(sum list, 1, length list, list)] 
-  | otherwise = subsets [(sum list, head list, length list - 1, list)]
+-- subsets :: [(Int, Int, Int, [Int])] -> [(Int, Int, Int, [Int])]
+-- subsets list
+--   | length list==1 = [(sum list, 1, length list, list)] 
+--   | otherwise = subsets [(sum list, head list, length list - 1, list)]
 
-
-merge_sort :: Ord a => [a] -> [a]
-merge_sort [] = []
-merge_sort xs = go [[x] | x <- xs]
-    where
-    go [a] = a
-    go xs = go (pairs xs)
-    pairs (a:b:t) = merge a b : pairs t
-    pairs t = t
-
-merge :: Ord a => [a] -> [a] -> [a]
-merge xs [] = xs
-merge [] ys = ys
-merge (x:xs) (y:ys) | x <= y    = x:merge xs (y:ys)
-                    | otherwise = y:merge (x:xs) ys
+quick_sort :: Ord a => [a] -> [a]
+quick_sort [] = []
+quick_sort (x:xs) = quick_sort less ++ equal ++ quick_sort larger
+  where
+    less   = [y | y<-xs, y<x]
+    equal  = [y | y<-xs, y==x] ++ [x]
+    larger = [y | y<-xs, y>x]
