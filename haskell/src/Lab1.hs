@@ -3,33 +3,32 @@ module Lab1
     ) where
 
 smallest_k_sets :: [(Int, Int, [Int])]
-smallest_k_sets = generate_subsets2 (check_length list3) 1
+smallest_k_sets = generate_subsets (check_length list3) 1
 
-
--- Generate subsets right to left
-generate_subsets1 :: [Int] -> Int -> [(Int, Int, [Int])]
-generate_subsets1 xs i
+-- Generate subsets subroutine, left to right
+subroutine_subsets :: [Int] -> Int -> [(Int, Int, [Int])]
+subroutine_subsets xs i
   | length xs==0 = []
-  | otherwise = (sum xs, i, xs) : generate_subsets1 (init xs) (i + 1)
+  | otherwise = (sum xs, i, xs) : subroutine_subsets (init xs) (i + 1)
 
--- Generate subsets left to right
-generate_subsets2 :: [Int] -> Int -> [(Int, Int, [Int])]
-generate_subsets2 xs i
+-- Generate subsets
+generate_subsets :: [Int] -> Int -> [(Int, Int, [Int])]
+generate_subsets xs i
   | length xs==0 = []
-  | otherwise = generate_subsets1 xs i ++ generate_subsets2 (tail xs) (i + 1)
+  | otherwise = subroutine_subsets xs i ++ generate_subsets (tail xs) (i + 1)
 
 check_length :: [Int] -> [Int]
 check_length xs
   | length xs==0 = error("Invalid input: list is empty!")
   | otherwise = xs
 
-quick_sort :: Ord a => [a] -> [a]
+quick_sort :: [(Int, Int, [Int])] -> [(Int, Int, [Int])]
 quick_sort [] = []
-quick_sort (x:xs) = quick_sort less ++ equal ++ quick_sort larger
+quick_sort (x : xs) = quick_sort less ++ equal ++ quick_sort larger
   where
-    less   = [y | y<-xs, y<x]
+    less   = [y | y<-xs, y<x ]
     equal  = [y | y<-xs, y==x] ++ [x]
-    larger = [y | y<-xs, y>x]
+    larger = [y | y<-xs, y>x ]
 
 
 list3 :: [Int] 
