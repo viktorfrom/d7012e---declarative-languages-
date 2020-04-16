@@ -1,7 +1,7 @@
 -- Code to Haskell lab assignment 2 in the course D7012E by Håkan Jonsson
 
 module Lab2
-    ( parse
+    ( result
     ) where
 
 import Data.Char
@@ -68,6 +68,10 @@ eval (Op "+" left right) env = eval left env + eval right env
 eval (Op "-" left right) env = eval left env - eval right env
 eval (Op "*" left right) env = eval left env * eval right env
 eval (Op "/" left right) env = eval left env / eval right env
+eval (Op "x" left right) env = eval left env + eval right env
+eval (App "sin" expr) env = sin (eval expr env) 
+eval (App "cos" expr) env = cos (eval expr env) 
+
 
 diff :: EXPR -> EXPR -> EXPR
 diff _ (Const _) = Const 0
@@ -98,3 +102,18 @@ simplify (Op oper left right) =
       ("/",e,Const 1) -> e
       ("-",le,re)     -> if left==right then Const 0 else Op "-" le re
       (op,le,re)      -> Op op le re
+
+
+-- result :: Float
+-- result = eval (parse "10+5") [("", 0)] --test
+
+-- result :: EXPR
+-- result = (parse "sin(x)") --test
+
+-- result :: Float
+-- result = eval (parse "sin(10+5)") [("", 0)] --test
+-- result = eval (parse "cos(10+5)") [("", 0)] --test
+
+
+result :: Float
+result = eval (parse "cos(15)") [("", 0)] --test
