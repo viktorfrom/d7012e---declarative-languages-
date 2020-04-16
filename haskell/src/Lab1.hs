@@ -2,8 +2,6 @@ module Lab1
     ( smallest_k_sets
     ) where
 
-
-
 -- Generate subsets subroutine, left to right
 subroutine_subsets :: [Int] -> Int -> Int -> [(Int, Int, Int, [Int])]
 subroutine_subsets xs i j
@@ -30,17 +28,36 @@ check_length xs
 
 result :: [Int] -> Int -> [(Int, Int, Int, [Int])]
 result xs k
-  | k <= 0 = error("Invalid input: second parameter needs to be >= 0!")
+  | k <= 0 = error("Invalid input: k cannot be less than 0!")
   | otherwise = take k (quick_sort(generate_subsets (check_length xs) 1 (length xs)))
 
-smallest_k_sets :: [(Int, Int, Int, [Int])]
-smallest_k_sets = result list3 3
+subset_sum :: (Int, Int, Int, [Int]) -> String
+subset_sum (sum, i, j, xs) = show sum
+
+subset_i :: (Int, Int, Int, [Int]) -> String
+subset_i (sum, i, j, xs) = show i
+
+subset_j :: (Int, Int, Int, [Int]) -> String
+subset_j (sum, i, j, xs) = show j
+
+subset_xs :: (Int, Int, Int, [Int]) -> String
+subset_xs (sum, i, j, xs) = show xs
+
+format :: [(Int, Int, Int, [Int])] -> String
+format [] = ""
+format (x: xs) = 
+    (subset_sum x) ++ " " ++ (subset_i x) ++ " " 
+    ++ (subset_j x) ++ " " ++ (subset_xs x) ++ "\n" ++ format xs
+
+smallest_k_sets :: String
+smallest_k_sets = format (result list3 15)
+
 
 list3 :: [Int]
 list3 = [-1, 2, -3, 4, -5]
 
--- list2 :: [Int] 
--- list2 = [-1]
+list2 :: [Int] 
+list2 = [-1]
 
--- list1 :: [Int] 
--- list1 = []
+list1 :: [Int] 
+list1 = []
