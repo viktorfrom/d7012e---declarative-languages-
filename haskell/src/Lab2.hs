@@ -71,7 +71,8 @@ eval (Op "/" left right) env = eval left env / eval right env
 eval (Op "x" left right) env = eval left env + eval right env
 eval (App "sin" expr) env = sin (eval expr env) 
 eval (App "cos" expr) env = cos (eval expr env) 
-
+eval (App "log" expr) env = log (eval expr env) 
+eval (App "exp" expr) env = exp (eval expr env) 
 
 diff :: EXPR -> EXPR -> EXPR
 diff _ (Const _) = Const 0
@@ -85,6 +86,8 @@ diff v (Op "*" e1 e2) =
 diff v (Op "/" e1 e2) =
   Op "/" (Op "-" (Op "*" (diff v e1) e1) (Op "*" e1 (diff v e2))) (Op "*" e2 e2)
 diff _ _ = error "can not compute the derivative"
+
+
 
 simplify :: EXPR -> EXPR
 simplify (Const n) = Const n
@@ -105,15 +108,15 @@ simplify (Op oper left right) =
 
 
 -- result :: Float
--- result = eval (parse "10+5") [("", 0)] --test
+-- result = (parse "sin(2*x)") --test
 
 -- result :: EXPR
--- result = (parse "sin(x)") --test
-
--- result :: Float
 -- result = eval (parse "sin(10+5)") [("", 0)] --test
 -- result = eval (parse "cos(10+5)") [("", 0)] --test
+-- result = eval (parse "sin(x)")   [("x", 0)] --test
+-- result = eval (parse "10+5") [("", 0)] --test
+-- result = eval (parse "log(10)") [("", 0)] --test
 
 
 result :: Float
-result = eval (parse "cos(15)") [("", 0)] --test
+result = eval (parse "exp(10)") [("", 0)]
