@@ -86,8 +86,8 @@ diff v (Op "/" e1 e2) =
   Op "/" (Op "-" (Op "*" (diff v e1) e1) (Op "*" e1 (diff v e2))) (Op "*" e2 e2)
 diff v (App "sin" e1) = App "cos" (e1)
 diff v (App "cos" e1) = App "sin" (e1) 
-diff v (App "exp" e1) =  Op "*" (App "exp" (e1)) (e1)
-diff v (App "log" e1) = App "log" (e1)
+diff v (App "exp" e1) = Op "*" (e1) (App "exp" (e1))
+diff v (App "log" e1) = Op "/" (diff v e1) (e1)
 -- diff v (App "cos" e1) = Op "sin" (diff v e1) (diff v e1)
 -- diff v (App "log" e1) = Op "+" (diff v e1) (diff v e1)
 -- diff v (App "exp" e1) = Op "+" (diff v e1) (diff v e1)
@@ -125,5 +125,5 @@ simplify (Op oper left right) =
 -- result = eval (parse "log(10)") [("", 0)] --test
 
 result :: EXPR
-result = (diff (Var "x") (parse "exp(x)"))
+result = (diff (Var "x") (parse "log(2*x)"))
 --result = (diff (Var "x") (parse "exp(sin(2*x))"))
