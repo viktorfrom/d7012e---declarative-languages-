@@ -112,6 +112,8 @@ simplify (Op oper left right) =
       ("/",e,Const 1) -> e
       ("-",le,re)     -> if left==right then Const 0 else Op "-" le re
       (op,le,re)      -> Op op le re
+--      (EXPR App) -> App
+      
 
 
 -- result :: EXPR
@@ -124,6 +126,6 @@ simplify (Op oper left right) =
 -- result = eval (parse "10+5") [("", 0)] --test
 -- result = eval (parse "log(10)") [("", 0)] --test
 
-result :: EXPR
-result = (diff (Var "x") (parse "log(2*x)"))
---result = (diff (Var "x") (parse "exp(sin(2*x))"))
+result :: String
+--result = (diff (Var "x") (parse "log(2*x)"))
+result = unparse (simplify (diff (Var "x") (parse "sin(x)")))
