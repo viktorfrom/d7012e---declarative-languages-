@@ -60,6 +60,7 @@ unparse :: EXPR -> String
 unparse (Const n) = show n
 unparse (Var s) = s
 unparse (Op oper e1 e2) = "(" ++ unparse e1 ++ oper ++ unparse e2 ++ ")"
+unparse (App func e1) = func ++ "(" ++ unparse e1 ++ ")"
 
 eval :: EXPR -> [(String,Float)] -> Float
 eval (Const n) _ = fromIntegral n
@@ -112,8 +113,8 @@ simplify (Op oper left right) =
       ("/",e,Const 1) -> e
       ("-",le,re)     -> if left==right then Const 0 else Op "-" le re
       (op,le,re)      -> Op op le re
---      (EXPR App) -> App
-      
+simplify (App func e1) = (App func e1)
+   
 
 
 -- result :: EXPR
@@ -124,8 +125,8 @@ simplify (Op oper left right) =
 -- result = eval (parse "cos(10+5)") [("", 0)] --test
 -- result = eval (parse "sin(x)")   [("x", 0)] --test
 -- result = eval (parse "10+5") [("", 0)] --test
--- result = eval (parse "log(10)") [("", 0)] --test
+-- result = eval §(parse "log(10)") [("", 0)] --test
 
 result :: String
 --result = (diff (Var "x") (parse "log(2*x)"))
-result = unparse (simplify (diff (Var "x") (parse "sin(x)")))
+result = unparse(simplify (diff (Var "x") (parse "sin(x)")))
