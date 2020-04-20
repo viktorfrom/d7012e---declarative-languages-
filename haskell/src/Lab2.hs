@@ -1,7 +1,8 @@
 -- Code to Haskell lab assignment 2 in the course D7012E by Håkan Jonsson
 
 module Lab2
-    ( result
+    ( result,
+      mkfun
     ) where
 
 import Data.Char
@@ -85,14 +86,10 @@ diff v (Op "*" e1 e2) =
   Op "+" (Op "*" (diff v e1) e2) (Op "*" e1 (diff v e2))
 diff v (Op "/" e1 e2) =
   Op "/" (Op "-" (Op "*" (diff v e1) e1) (Op "*" e1 (diff v e2))) (Op "*" e2 e2)
-diff v (App "sin" e1) = App "cos" (e1)
-diff v (App "cos" e1) = App "sin" (e1) 
-diff v (App "exp" e1) = Op "*" (e1) (App "exp" (e1))
+diff v (App "sin" e1) = Op "*" (diff v e1) (App "cos" (e1))
+diff v (App "cos" e1) = Op "*" (diff v e1) (App "sin" (e1))
+diff v (App "exp" e1) = Op "*" (diff v e1) (App "exp" (e1))
 diff v (App "log" e1) = Op "/" (diff v e1) (e1)
--- diff v (App "cos" e1) = Op "sin" (diff v e1) (diff v e1)
--- diff v (App "log" e1) = Op "+" (diff v e1) (diff v e1)
--- diff v (App "exp" e1) = Op "+" (diff v e1) (diff v e1)
-
 diff _ _ = error "can not compute the derivative"
 
 
@@ -113,10 +110,8 @@ simplify (Op oper left right) =
       ("/",e,Const 1) -> e
       ("-",le,re)     -> if left==right then Const 0 else Op "-" le re
       (op,le,re)      -> Op op le re
-simplify (App func e1) = (App func e1)
+simplify (App fn e1) = App fn e1
    
-
-
 -- result :: EXPR
 -- result = (parse "sin(2*x)") --test
 
@@ -125,8 +120,15 @@ simplify (App func e1) = (App func e1)
 -- result = eval (parse "cos(10+5)") [("", 0)] --test
 -- result = eval (parse "sin(x)")   [("x", 0)] --test
 -- result = eval (parse "10+5") [("", 0)] --test
--- result = eval §(parse "log(10)") [("", 0)] --test
+-- result = eval (parse "log(10)") [("", 0)] --test
 
-result :: String
---result = (diff (Var "x") (parse "log(2*x)"))
-result = unparse(simplify (diff (Var "x") (parse "sin(x)")))
+-- part 2
+-- result :: String
+-- result = unparse(simplify (diff (Var "x") (parse "exp(sin(2*x))"))) 
+
+-- part 3
+mkfun :: (EXPR, EXPR) -> (Float -> Float)
+mkfun (expr, var) x = eval expr [((unparse var), x)]
+
+result :: Float
+result = mkfun (parse "x*x+2", Var "x") 3 
