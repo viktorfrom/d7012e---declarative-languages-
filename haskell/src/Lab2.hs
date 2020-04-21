@@ -93,7 +93,6 @@ diff v (App "log" e1) = Op "/" (diff v e1) (e1)
 diff _ _ = error "can not compute the derivative"
 
 
-
 simplify :: EXPR -> EXPR
 simplify (Const n) = Const n
 simplify (Var id) = Var id
@@ -110,7 +109,7 @@ simplify (Op oper left right) =
       ("/",e,Const 1) -> e
       ("-",le,re)     -> if left==right then Const 0 else Op "-" le re
       (op,le,re)      -> Op op le re
-simplify (App fn e1) = App fn e1
+simplify (App fn e1) = App fn (simplify e1)
    
 -- result :: EXPR
 -- result = (parse "sin(2*x)") --test
@@ -123,30 +122,30 @@ simplify (App fn e1) = App fn e1
 -- result = eval (parse "log(10)") [("", 0)] --test
 
 -- part 2
--- result :: String
--- result = unparse(simplify (diff (Var "x") (parse "exp(sin(2*x))"))) 
+result :: String
+result = unparse(simplify ((parse "sin(1*x))"))) 
 
 -- part 3
-mkfun :: (EXPR, EXPR) -> (Float -> Float)
-mkfun (var, expr) x = eval expr [((unparse var), x)]
+-- mkfun :: (EXPR, EXPR) -> (Float -> Float)
+-- mkfun (var, expr) x = eval expr [((unparse var), x)]
 
 -- result :: Float
 -- result = mkfun (Var "x", parse "x*x+2") 3 
 
 --part 4
-findzero ::  String -> String -> Float -> Float
-findzero s1 s2 x0 
-  | abs(x0 - x1) < 0.0001 = x1
-  | otherwise = findzero s1 s2 (xn_sum s1 s2 x0)
-  where
-    x1 = xn_sum s1 s2 x0
+-- findzero ::  String -> String -> Float -> Float
+-- findzero s1 s2 x0 
+--   | abs(x0 - x1) < 0.0001 = x1
+--   | otherwise = findzero s1 s2 (xn_sum s1 s2 x0)
+--   where
+--     x1 = xn_sum s1 s2 x0
 
-s2_prim :: String -> String -> String 
-s2_prim s1 s2 = unparse(simplify (diff (Var s1) (parse s2))) 
+-- s2_prim :: String -> String -> String 
+-- s2_prim s1 s2 = unparse(simplify (diff (Var s1) (parse s2))) 
 
-xn_sum ::  String -> String -> Float -> Float
-xn_sum s1 s2 x0 = x0 - (eval (parse ("(" ++ s2 ++ ")"++ "/" ++ s2_prim s1 s2)) [((s1), x0)])
+-- xn_sum ::  String -> String -> Float -> Float
+-- xn_sum s1 s2 x0 = x0 - (eval (parse ("(" ++ s2 ++ ")"++ "/" ++ s2_prim s1 s2)) [((s1), x0)])
 
-result :: Float
---result = findzero "x" "x*x*x+x-1" 1.0  --0.68232775
-result = findzero "y" "cos(y)*sin(y)" 2.0 --1.5707964
+-- result :: Float
+-- result = findzero "x" "x*x*x+x-1" 1.0  --0.68232775
+-- result = findzero "y" "cos(y)*sin(y)" 2.0 --1.5707964
