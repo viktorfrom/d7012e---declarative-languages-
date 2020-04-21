@@ -2,7 +2,7 @@
 
 module Lab2
     ( result,
-      mkfun
+      --mkfun
     ) where
 
 import Data.Char
@@ -127,8 +127,20 @@ simplify (App fn e1) = App fn e1
 -- result = unparse(simplify (diff (Var "x") (parse "exp(sin(2*x))"))) 
 
 -- part 3
-mkfun :: (EXPR, EXPR) -> (Float -> Float)
-mkfun (expr, var) x = eval expr [((unparse var), x)]
+-- mkfun :: (EXPR, EXPR) -> (Float -> Float)
+-- mkfun (expr, var) x = eval expr [((unparse var), x)]
+
+-- result :: Float
+-- result = mkfun (parse "x*x+2", Var "x") 3 
+
+-- part 4
+findzero ::  String -> String -> Float -> Float
+findzero s1 s2 x0 = x0 - eval (parse (s2 ++ "/" ++ s2_prim s1 s2)) [((s1), x0)]
+
+s2_prim :: String -> String -> String 
+s2_prim var expr = unparse(simplify (diff (Var var) (parse expr))) 
 
 result :: Float
-result = mkfun (parse "x*x+2", Var "x") 3 
+-- result = ("x*x*x+x-1" ++ "/" ++ fprim "x" "x*x*x+x-1")
+result = findzero "x" "x*x*x+x-1" 1.0 --0.68232775
+-- result = findzero "y" "cos(y)*sin(y)" 2.0 --1.5707964
