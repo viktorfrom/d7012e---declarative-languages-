@@ -2,7 +2,7 @@
 
 module Lab2
     ( result,
-      --mkfun
+      mkfun
     ) where
 
 import Data.Char
@@ -139,7 +139,6 @@ findzero s1 s2 x0 = newton_raphson fn fn_prim x0
     fn = mkfun (Var s1, parse s2)
     fn_prim = mkfun (Var s1, (diff (Var s1) (parse s2)))
 
-  
 newton_raphson :: (Float -> Float) -> (Float -> Float) -> Float -> Float
 newton_raphson fn fn_prim x0
   | abs(x0 - x1_next) < 0.0001 = x1_next
@@ -148,7 +147,6 @@ newton_raphson fn fn_prim x0
     x1 = x0 - (fn x0) / (fn_prim x0)
     x1_next = x1 - (fn x1) / (fn_prim x1)
 
-
 -- findzero ::  String -> String -> Float -> Float
 -- findzero s1 s2 x0 
 --   | abs(x0 - x1) < 0.0001 = x1
@@ -156,7 +154,6 @@ newton_raphson fn fn_prim x0
 --   where
 --     x1 = xn_sum s1 s2 x0
     
-
 -- s2_prim :: String -> String -> String 
 -- s2_prim s1 s2 = unparse(simplify (diff (Var s1) (parse s2))) 
 
