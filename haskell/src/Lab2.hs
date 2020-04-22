@@ -122,23 +122,40 @@ simplify (App fn e1) = App fn (simplify e1)
 -- result = eval (parse "log(10)") [("", 0)] --test
 
 -- part 2
-result :: String
-result = unparse(simplify ((parse "sin(1*x))"))) 
+-- result :: String
+-- result = unparse(simplify (diff (Var "x") (parse "exp(sin(2*x))"))) 
 
 -- part 3
--- mkfun :: (EXPR, EXPR) -> (Float -> Float)
--- mkfun (var, expr) x = eval expr [((unparse var), x)]
+mkfun :: (EXPR, EXPR) -> (Float -> Float)
+mkfun (var, expr) x = eval expr [((unparse var), x)]
 
 -- result :: Float
 -- result = mkfun (Var "x", parse "x*x+2") 3 
 
 --part 4
+findzero ::  String -> String -> Float -> Float
+findzero s1 s2 x0 = newton_raphson fn fn_prim x0
+  where
+    fn = mkfun (Var s1, parse s2)
+    fn_prim = mkfun (Var s1, (diff (Var s1) (parse s2)))
+
+  
+newton_raphson :: (Float -> Float) -> (Float -> Float) -> Float -> Float
+newton_raphson fn fn_prim x0
+  | abs(x0 - x1_next) < 0.0001 = x1_next
+  | otherwise = newton_raphson fn fn_prim x1_next
+  where
+    x1 = x0 - (fn x0) / (fn_prim x0)
+    x1_next = x1 - (fn x1) / (fn_prim x1)
+
+
 -- findzero ::  String -> String -> Float -> Float
 -- findzero s1 s2 x0 
 --   | abs(x0 - x1) < 0.0001 = x1
 --   | otherwise = findzero s1 s2 (xn_sum s1 s2 x0)
 --   where
 --     x1 = xn_sum s1 s2 x0
+    
 
 -- s2_prim :: String -> String -> String 
 -- s2_prim s1 s2 = unparse(simplify (diff (Var s1) (parse s2))) 
@@ -146,6 +163,6 @@ result = unparse(simplify ((parse "sin(1*x))")))
 -- xn_sum ::  String -> String -> Float -> Float
 -- xn_sum s1 s2 x0 = x0 - (eval (parse ("(" ++ s2 ++ ")"++ "/" ++ s2_prim s1 s2)) [((s1), x0)])
 
--- result :: Float
--- result = findzero "x" "x*x*x+x-1" 1.0  --0.68232775
--- result = findzero "y" "cos(y)*sin(y)" 2.0 --1.5707964
+result :: Float
+result = findzero "x" "x*x*x+x-1" 1.0  --0.68232775
+--result = findzero "y" "cos(y)*sin(y)" 2.0 --1.5707964
