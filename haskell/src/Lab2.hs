@@ -1,4 +1,4 @@
--- Code to Haskell lab assignment 2 in the course D7012E by Håkan Jonsson
+-- Code to Haskell lab assignment 2 in the course D7012E by Håkan Jonsson and Viktor From
 
 module Lab2
     ( result,
