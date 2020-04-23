@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c60607fbc4a93da4f448c4e7779d7e5e662e58e330752efcee7c05924d31626f
+-- hash: aba2d6ff6f3545c2ec626894b7b281f7d52da9cac00ccb38442b47a46f3c30f1
 
 name:           haskell
 version:        0.1.0.0
@@ -27,8 +27,19 @@ source-repository head
 
 library
   exposed-modules:
+      CoreParser
+      Dictionary
+      Expr
       Lab1
       Lab2
+      Lab3
+      Parser
+      Program
+      Statement
+      TestExpr
+      TestParser
+      TestProgram
+      TestStatement
   other-modules:
       Paths_haskell
   hs-source-dirs:
