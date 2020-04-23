@@ -141,11 +141,11 @@ findzero s1 s2 x0 = newton_raphson fn fn_prim x0
 
 newton_raphson :: (Float -> Float) -> (Float -> Float) -> Float -> Float
 newton_raphson fn fn_prim x0
-  | abs(x0 - x1_next) < 0.0001 = x1_next
-  | otherwise = newton_raphson fn fn_prim x1_next
+  | abs(x0 - x1) < 0.0001 = x1
+  | otherwise = newton_raphson fn fn_prim x1
   where
     x1 = x0 - (fn x0) / (fn_prim x0)
-    x1_next = x1 - (fn x1) / (fn_prim x1)
+    --x1_next = x1 - (fn x1) / (fn_prim x1)
 
 -- findzero ::  String -> String -> Float -> Float
 -- findzero s1 s2 x0 
