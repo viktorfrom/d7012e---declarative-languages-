@@ -71,7 +71,18 @@ shw prec (Mul t u) = parens (prec>6) (shw 6 t ++ "*" ++ shw 6 u)
 shw prec (Div t u) = parens (prec>6) (shw 6 t ++ "/" ++ shw 7 u)
 
 value :: Expr -> Dictionary.T String Integer -> Integer
-value (Num n) _ = error "value not implemented"
+value (Num n) _  = n
+value (Add t u) dict = (value t dict) + (value u dict)
+value (Sub t u) dict = (value t dict) - (value u dict)
+value (Mul t u) dict = (value t dict) * (value u dict)
+value (Div t u) dict
+  | (value u dict)==0 = error("Invalid input: division by zero!")
+  | otherwise = (value t dict) + (value u dict)
+value (Var v) dict = case Dictionary.lookup v dict of
+                     Just v -> v
+                     Nothing -> error ("Invalid input: undefined variable!")
+
+
 
 instance Parse Expr where
     parse = expr
