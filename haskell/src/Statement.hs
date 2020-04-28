@@ -19,8 +19,8 @@ data Statement =
 assignment = word #- accept ":=" # Expr.parse #- require ";" >-> buildAss
 buildAss (v, e) = Assignment v e
 
--- Remove "if", "then", "else". Save (expr) # (statement) # (statement) within if-statement
-if_statement = (accept "if" -# Expr.parse #- require "then") # (parse #- require "else") # parse >-> buildIf
+-- Remove "if", "then", "else". Save (expr) # (stmt) # (stmt) within if-stmt
+if_stmt = (accept "if" -# Expr.parse #- require "then") # (parse #- require "else") # parse >-> buildIf
 buildIf ((expr, stmt1), stmt2) = If expr stmt1 stmt2
 
 
@@ -29,9 +29,9 @@ buildSkip _ = Skip
 
 begin = accept "begin" -# iter parse #- require "end" >-> Begin
 
-
--- while = accept "while" #- require ";" >-> buildWhile
--- buildWhile _ = While
+-- Remove "while" and "do". Save/parse expr and stmt.
+while = (accept "while" -# Expr.parse #- require "do") # parse >-> buildWhile
+buildWhile (expr, stmt) = While expr stmt
 
 
 read = accept "read" -# word #- require ";" >-> Read
