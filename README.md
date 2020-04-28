@@ -26,6 +26,11 @@ run project
 stack build && stack exec my-project-exe
 ```
 
+pre-defined testing for lab3 
+```
+stack ghci (:q to quit)
+```
+
 ## Authors
 * Viktor From - vikfro-@student.ltu.se - [viktorfrom](https://github.com/viktorfrom)
 
