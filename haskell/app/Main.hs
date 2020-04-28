@@ -3,6 +3,7 @@ module Main where
 import Lab1
 --import Lab2
 import Lab3
+import TestParser
 
 main :: IO () 
 -- Lab1
@@ -12,4 +13,4 @@ main :: IO ()
 --main = print result
 
 -- Lab3
-main = print result
+main = print "test"

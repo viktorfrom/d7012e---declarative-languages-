@@ -82,8 +82,6 @@ value (Var v) dict = case Dictionary.lookup v dict of
                      Just v -> v
                      Nothing -> error ("Invalid input: undefined variable!")
 
-
-
 instance Parse Expr where
     parse = expr
     toString = shw 0
