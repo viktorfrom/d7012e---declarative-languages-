@@ -43,8 +43,8 @@ read = accept "read" -# word #- require ";" >-> Read
 write = accept "write" -# Expr.parse #- require ";" >-> Write
 
 exec :: [T] -> Dictionary.T String Integer -> [Integer] -> [Integer]
--- Takes a var with coresponding val (int) and stores it in a dict
---exec (Assignment var expr: stmts) dict input = exec (Dictionary.insert (var, (Expr.value expr dict)) dict)
+-- Takes a var with coresponding expr/func and stores it in a dict
+exec (Assignment var expr: stmts) dict input = exec stmts (Dictionary.insert(var, (Expr.value expr dict)) dict) input
 
 exec (If cond thenStmts elseStmts: stmts) dict input = 
     if (Expr.value cond dict)>0 
@@ -63,9 +63,11 @@ exec (Begin xs: stmts) dict input = exec (xs ++ stmts) dict input
 -- Do nothing with stmts
 exec (Skip: stmts) dict input = exec stmts dict input  
 
---exec (Read var: stmts) dict input = exec (Expr.value: stmts) dict input
+-- Takes a var with coresponding val (int) (head of list) and stores it in a dict
+exec (Read var: stmts) dict input = exec stmts (Dictionary.insert((var, (head input))) dict) (tail input)
 
---exec (Write var: stmts) dict input = exec (Expr.value: stmts) dict input
+-- Takes a val and writes to a var in the dictionary
+--exec (Write var: stmts) dict input = exec stmts (Dictionary.lookup(var) dict) input
 
 
 instance Parse Statement where
