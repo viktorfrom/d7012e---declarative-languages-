@@ -43,16 +43,29 @@ read = accept "read" -# word #- require ";" >-> Read
 write = accept "write" -# Expr.parse #- require ";" >-> Write
 
 exec :: [T] -> Dictionary.T String Integer -> [Integer] -> [Integer]
-exec (Assignment var expr: stmts) dict input = exec stmts dict input
+-- Takes a var with coresponding val (int) and stores it in a dict
+--exec (Assignment var expr: stmts) dict input = exec (Dictionary.insert (var, (Expr.value expr dict)) dict)
+
 exec (If cond thenStmts elseStmts: stmts) dict input = 
     if (Expr.value cond dict)>0 
     then exec (thenStmts: stmts) dict input
     else exec (elseStmts: stmts) dict input
-exec (While cond expr: stmts) dict input = exec stmts dict input
-exec (Begin (x:xs): stmts) dict input = exec stmts dict input
-exec (Skip: stmts) dict input = exec stmts dict input
-exec (Read var: stmts) dict input = exec stmts dict input
-exec (Write var: stmts) dict input = exec stmts dict input
+
+-- While cond is true, execute stmts
+exec (While cond thenStmts: stmts) dict input = 
+    if (Expr.value cond dict)>0
+    then exec (thenStmts: stmts) dict input
+    else exec stmts dict input
+
+-- Takes a list and appends/concatenates stmts onto the list
+exec (Begin xs: stmts) dict input = exec (xs ++ stmts) dict input
+
+-- Do nothing with stmts
+exec (Skip: stmts) dict input = exec stmts dict input  
+
+--exec (Read var: stmts) dict input = exec (Expr.value: stmts) dict input
+
+--exec (Write var: stmts) dict input = exec (Expr.value: stmts) dict input
 
 
 instance Parse Statement where
