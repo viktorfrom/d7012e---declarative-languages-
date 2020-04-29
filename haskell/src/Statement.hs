@@ -66,8 +66,8 @@ exec (Skip: stmts) dict input = exec stmts dict input
 -- Takes a var with coresponding val (int) (head of list) and stores it in a dict
 exec (Read var: stmts) dict input = exec stmts (Dictionary.insert((var, (head input))) dict) (tail input)
 
--- Takes a val and writes to a var in the dictionary
---exec (Write var: stmts) dict input = exec stmts (Dictionary.lookup(var) dict) input
+-- "Unpacks" val using Expr.value and adds element at start of returned list
+exec (Write val: stmts) dict input = (Expr.value val dict) : (exec stmts dict input)
 
 
 instance Parse Statement where
