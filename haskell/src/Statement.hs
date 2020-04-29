@@ -43,10 +43,17 @@ read = accept "read" -# word #- require ";" >-> Read
 write = accept "write" -# Expr.parse #- require ";" >-> Write
 
 exec :: [T] -> Dictionary.T String Integer -> [Integer] -> [Integer]
+exec (Assignment var expr: stmts) dict input = exec stmts dict input
 exec (If cond thenStmts elseStmts: stmts) dict input = 
     if (Expr.value cond dict)>0 
     then exec (thenStmts: stmts) dict input
     else exec (elseStmts: stmts) dict input
+exec (While cond expr: stmts) dict input = exec stmts dict input
+exec (Begin (x:xs): stmts) dict input = exec stmts dict input
+exec (Skip: stmts) dict input = exec stmts dict input
+exec (Read var: stmts) dict input = exec stmts dict input
+exec (Write var: stmts) dict input = exec stmts dict input
+
 
 instance Parse Statement where
   parse = assignment ! if_stmt ! skip ! begin ! while ! Statement.read ! Statement.write
