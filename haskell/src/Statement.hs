@@ -5,7 +5,7 @@ import qualified Dictionary
 import qualified Expr
 type T = Statement
 
--- Type T should have 7 constructors
+-- Type T includes 7 constructors
 data Statement =
     Assignment String Expr.T |
     If Expr.T Statement Statement |
