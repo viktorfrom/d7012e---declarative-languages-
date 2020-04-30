@@ -62,14 +62,10 @@ shw :: Int -> Statement -> String
 shw prec (Assignment var expr) =  var ++ " := " ++ (Expr.toString expr) ++ ";\n"
 shw prec (If expr stmt1 stmt2) = "if " ++ (Expr.toString expr) ++ " then\n" ++ (toString stmt1) ++ "else\n" ++ (toString stmt2)
 shw prec (Skip) = "skip" ++ ";\n"
-
---shw prec (Begin xs) = "begin\n" ++ (Expr.toString (iter xs)) ++ "end\n"
---while = (accept "while" -# Expr.parse #- require "do") # parse >-> buildWhile
-
-shw prec (While cond )
-
-
-
+shw prec (Begin xs) = "begin\n" ++ (toString (head xs)) ++ shw prec (Begin (tail xs)) ++ "end\n"
+shw prec (While cond stmt) = "while " ++ (Expr.toString cond) ++ " do\n" ++ (toString stmt) ++ "\n"
+shw prec (Read var) = "read " ++ var ++ ";\n"
+shw prec (Write val) = "write " ++ (toString val) ++ ";\n"
 
 instance Parse Statement where
   parse = (assignment ! if_stmt ! skip ! begin ! while ! Statement.read ! Statement.write)
