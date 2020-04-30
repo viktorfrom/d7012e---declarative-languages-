@@ -3,7 +3,7 @@ import Parser hiding (T)
 import qualified Statement
 import qualified Dictionary
 import Prelude hiding (return, fail)
-newtype T = Program ([Statement.T]) -- Import type T (7 constructors)
+newtype T = Program [Statement.T] deriving (Show) -- Import type T (7 constructors)
 instance Parse T where
   -- Iterate through the program stmts
   parse = (iter Statement.parse) >-> Program
