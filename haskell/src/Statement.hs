@@ -13,7 +13,8 @@ data Statement =
     Begin [Statement] |
     While Expr.T Statement |
     Read String |
-    Write Expr.T
+    Write Expr.T |
+    Repeat Expr.T Statement
     deriving Show
 
 -- Remove ":=", ";" and keep word/var. Assign val to word/var.
@@ -36,7 +37,12 @@ read = accept "read" -# word #- require ";" >-> Read
 -- Remove "write", ";" and write expr to word/var
 write = accept "write" -# Expr.parse #- require ";" >-> Write
 
+-- REPEAT
+repeat =  (accept "repeat" -# Expr.parse) # parse >-> buildRepeat
+buildRepeat (expr, stmt) = Repeat expr stmt
+
 exec :: [T] -> Dictionary.T String Integer -> [Integer] -> [Integer]
+exec [] _ _ = []
 -- Takes a var with coresponding expr/func and stores it in a dict
 exec (Assignment var expr: stmts) dict input = exec stmts (Dictionary.insert(var, (Expr.value expr dict)) dict) input
 exec (If cond stmt1 stmt2: stmts) dict input = 
@@ -57,6 +63,11 @@ exec (Read var: stmts) dict input = exec stmts (Dictionary.insert((var, (head in
 -- "Unpacks" val using Expr.value and adds element at start of returned list
 exec (Write val: stmts) dict input = (Expr.value val dict) : (exec stmts dict input)
 
+exec (Repeat cond stmt: stmts) dict input = 
+    if (Expr.value cond dict)>0
+    then exec (stmt: stmts) dict input
+    else exec stmts dict input
+
 -- Convert stmts into strings, similar to Expr.shw
 shw :: Int -> Statement -> String
 shw prec (Assignment var expr) =  var ++ " := " ++ (Expr.toString expr) ++ ";\n"
@@ -66,7 +77,8 @@ shw prec (Begin xs) = "begin\n" ++ (toString (head xs)) ++ shw prec (Begin (tail
 shw prec (While cond stmt) = "while " ++ (Expr.toString cond) ++ " do\n" ++ (toString stmt) ++ "\n"
 shw prec (Read var) = "read " ++ var ++ ";\n"
 shw prec (Write val) = "write " ++ (toString val) ++ ";\n"
+shw prec (Repeat cond stmt) = "repeat\n" ++ (toString stmt) ++ "\n" ++ "until " ++ (Expr.toString cond) ++ "\n"
 
 instance Parse Statement where
-  parse = (assignment ! if_stmt ! skip ! begin ! while ! Statement.read ! Statement.write)
+  parse = (assignment ! if_stmt ! skip ! begin ! while ! Statement.read ! Statement.write ! Statement.repeat)
   toString = shw 0
