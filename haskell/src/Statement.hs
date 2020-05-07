@@ -65,10 +65,9 @@ exec (Write val: stmts) dict input = (Expr.value val dict) : (exec stmts dict in
 -- Until cond is false, exec stmts
 exec (Repeat cond stmt: stmts) dict input = 
     exec (stmt: 
-    if (Expr.value cond dict)>0
+    if (Expr.value cond dict) < 0
     then Repeat cond stmt: stmts
     else stmts) dict input
-
 
 -- Convert stmts into strings, similar to Expr.shw
 shw :: Int -> Statement -> String
