@@ -50,7 +50,7 @@ exec (If cond stmt1 stmt2: stmts) dict input =
     then exec (stmt1: stmts) dict input
     else exec (stmt2: stmts) dict input
 -- Do nothing with stmts
-exec (Skip: stmts) dict input = exec stmts dict input  
+exec (Skip: stmts) diict input = exec stmts dict input  
 -- Takes a list and appends/concatenates stmts onto the list
 exec (Begin xs: stmts) dict input = exec (xs ++ stmts) dict input
 -- While cond is true, execute stmts
