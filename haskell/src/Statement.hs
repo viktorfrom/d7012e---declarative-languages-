@@ -38,8 +38,8 @@ read = accept "read" -# word #- require ";" >-> Read
 write = accept "write" -# Expr.parse #- require ";" >-> Write
 
 -- REPEAT
-repeat =  (accept "repeat" -# Expr.parse) # parse >-> buildRepeat
-buildRepeat (expr, stmt) = Repeat expr stmt
+repeat =  ((accept "repeat" -# parse) #- require "until") # Expr.parse #- require ";" >-> buildRepeat
+buildRepeat (stmt, expr) = Repeat expr stmt
 
 exec :: [T] -> Dictionary.T String Integer -> [Integer] -> [Integer]
 exec [] _ _ = []
@@ -50,10 +50,10 @@ exec (If cond stmt1 stmt2: stmts) dict input =
     then exec (stmt1: stmts) dict input
     else exec (stmt2: stmts) dict input
 -- Do nothing with stmts
-exec (Skip: stmts) diict input = exec stmts dict input  
+exec (Skip: stmts) dict input = exec stmts dict input  
 -- Takes a list and appends/concatenates stmts onto the list
 exec (Begin xs: stmts) dict input = exec (xs ++ stmts) dict input
--- While cond is true, execute stmts
+-- While cond is true, exec stmts
 exec (While cond stmt: stmts) dict input = 
     if (Expr.value cond dict)>0
     then exec (stmt: stmts) dict input
@@ -62,11 +62,13 @@ exec (While cond stmt: stmts) dict input =
 exec (Read var: stmts) dict input = exec stmts (Dictionary.insert((var, (head input))) dict) (tail input)
 -- "Unpacks" val using Expr.value and adds element at start of returned list
 exec (Write val: stmts) dict input = (Expr.value val dict) : (exec stmts dict input)
-
+-- Until cond is false, exec stmts
 exec (Repeat cond stmt: stmts) dict input = 
+    exec (stmt: 
     if (Expr.value cond dict)>0
-    then exec (stmt: stmts) dict input
-    else exec stmts dict input
+    then Repeat cond stmt: stmts
+    else stmts) dict input
+
 
 -- Convert stmts into strings, similar to Expr.shw
 shw :: Int -> Statement -> String
@@ -80,5 +82,12 @@ shw prec (Write val) = "write " ++ (toString val) ++ ";\n"
 shw prec (Repeat cond stmt) = "repeat\n" ++ (toString stmt) ++ "\n" ++ "until " ++ (Expr.toString cond) ++ "\n"
 
 instance Parse Statement where
-  parse = (assignment ! if_stmt ! skip ! begin ! while ! Statement.read ! Statement.write ! Statement.repeat)
+  parse = (assignment ! 
+           if_stmt ! 
+           skip ! 
+           begin ! 
+           while ! 
+           Statement.read ! 
+           Statement.write ! 
+           Statement.repeat)
   toString = shw 0
