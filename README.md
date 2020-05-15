@@ -36,6 +36,15 @@ stack ghci (:q to quit)
 
 # Prolog
 ## Build and usage
+Start Prolog
+```
+swpl
+```
+
+Load program
+```
+[my-project.pl].
+```
 
 ## Authors
 * Viktor From - vikfro-@student.ltu.se - [viktorfrom](https://github.com/viktorfrom)
