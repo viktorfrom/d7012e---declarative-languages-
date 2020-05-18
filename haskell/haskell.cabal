@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: aba2d6ff6f3545c2ec626894b7b281f7d52da9cac00ccb38442b47a46f3c30f1
+-- hash: cba1bbe7c0cb1a170d5de076913b9612cd905fae4276d2d7b611c19ec93e408a
 
 name:           haskell
 version:        0.1.0.0
@@ -32,7 +32,6 @@ library
       Expr
       Lab1
       Lab2
-      Lab3
       Parser
       Program
       Statement

@@ -52,11 +52,11 @@ exec (If cond stmt1 stmt2: stmts) dict input =
 -- Do nothing with stmts
 exec (Skip: stmts) dict input = exec stmts dict input  
 -- Takes a list and appends/concatenates stmts onto the list
-exec (Begin xs: stmts) dict input = exec (xs ++ stmts) dict input
+exec (Begin stmt: stmts) dict input = exec (stmt ++ stmts) dict input
 -- While cond is true, exec stmts
 exec (While cond stmt: stmts) dict input = 
     if (Expr.value cond dict)>0
-    then exec (stmt: stmts) dict input
+    then exec (stmt: While cond stmt: stmts) dict input
     else exec stmts dict input
 -- Takes a var with coresponding val (int) (head of list) and stores it in a dict
 exec (Read var: stmts) dict input = exec stmts (Dictionary.insert((var, (head input))) dict) (tail input)
@@ -74,7 +74,7 @@ shw :: Int -> Statement -> String
 shw prec (Assignment var expr) =  var ++ " := " ++ (Expr.toString expr) ++ ";\n"
 shw prec (If expr stmt1 stmt2) = "if " ++ (Expr.toString expr) ++ " then\n" ++ (toString stmt1) ++ "else\n" ++ (toString stmt2)
 shw prec (Skip) = "skip" ++ ";\n"
-shw prec (Begin xs) = "begin\n" ++ (toString (head xs)) ++ shw prec (Begin (tail xs)) ++ "end\n"
+shw prec (Begin stmts) = "begin\n" ++ foldr(++) "" (map (shw 0) stmts) ++ "end\n"
 shw prec (While cond stmt) = "while " ++ (Expr.toString cond) ++ " do\n" ++ (toString stmt) ++ "\n"
 shw prec (Read var) = "read " ++ var ++ ";\n"
 shw prec (Write val) = "write " ++ (toString val) ++ ";\n"
