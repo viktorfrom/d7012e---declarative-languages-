@@ -29,8 +29,6 @@ move(state(r3, SteelKey, inventory, Package),
      walk(r3, r1),
      state(r1, SteelKey, inventory, Package)). 
 
-
-
 % Grab steel key.
 move(state(Room, Room, BrassKey, Package),
      grab(steelKey),
@@ -48,8 +46,6 @@ move(state(Room, SteelKey, BrassKey, Room),
      grab(package),
      state(Room, SteelKey, BrassKey, inventory)) :- 
           state \= state(_, inventory, inventory, inventory). 
-
-
 
 % Drop steel key.
 move(state(Room, inventory, BrassKey, Package),
@@ -69,12 +65,19 @@ move(state(Room, SteelKey, BrassKey, inventory),
 canget(state( _, _, _, has)).       
 
 
-% tests for grab.
+% test move.
+% move(state(r1, inventory, r2, r3), walk(r1, r2), X).
+% move(state(r2, inventory, r2, r3), walk(r2, r1), X).
+
+% move(state(r1, r1, inventory, r3), walk(r1, r3), X).
+% move(state(r3, r1, inventory, r3), walk(r3, r1), X).
+
+% test grab.
 % move(state(r1, r1, r2, r3), grab(steelKey), X).
 % move(state(r2, r1, r2, r3), grab(brassKey), X).
 % move(state(r3, r1, r2, r3), grab(package), X).
 
-% tests for drop.
+% test drop.
 % move(state(r3, inventory, r2, r3), drop(steelKey), X).
 % move(state(r1, r1, inventory, r3), drop(brassKey), X).
 % move(state(r2, r1, r2, inventory), drop(package), X).
