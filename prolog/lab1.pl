@@ -7,8 +7,6 @@
 % A three-place relation:
 % move(state1, Move, state2)
 % State1 -> Move -> State2
-    
-
 
 
 % Move from room 1 to room 2.
@@ -34,40 +32,46 @@ move(state(r3, SteelKey, inventory, Package),
 
 
 % Grab steel key
-move(state(r1, inventory, BrassKey, Package),
-     grab = "Picked up steel key.",
-     state(r1, inventory, BrassKey, Package)).
+move(state(Room, Room, BrassKey, Package),
+     grab(steelKey),
+     state = state(Room, inventory, BrassKey, Package)) :- 
+          state \= state(_, inventory, inventory, inventory). 
 
 % Grab brass key
-move(state(r2, SteelKey, inventory, Package),
-     grab = "Picked up brass key.",
-     state(r2, SteelKey, inventory, Package)). 
+move(state(Room, SteelKey, Room, Package),
+     grab(brassKey),
+     state = state(Room, SteelKey, inventory, Package)) :-
+          state \= state(_, inventory, inventory, inventory). 
 
 % Grab package.
-move(state(r3, SteelKey, BrassKey, inventory),
-     grab = "Picked up package.",
-     state(r3, SteelKey, BrassKey, inventory)). 
-
-
+move(state(Room, SteelKey, BrassKey, Room),
+     grab(package),
+     state(Room, SteelKey, BrassKey, inventory)) :- 
+          state \= state(_, inventory, inventory, inventory). 
 
 
 
 % Drop steel key.
 move(state(_, inventory, BrassKey, Package),
-     drop,
+     drop = "Steel key dropped.",
      state(_, inventory, BrassKey, Package)). 
 
 % Drop brass key.
 move(state(_, SteelKey, inventory, Package),
-     drop,
+     drop = "Brass key dropped.",
      state(_, SteelKey, inventory, Package)). 
 
 % Drop package.
 move(state(_, SteelKey, BrassKey, inventory),
-     drop,
+     drop = "Package dropped.",
      state(_, SteelKey, BrassKey, inventory)). 
 
 canget(state( _, _, _, has)).       
+
+% move(state(r1, r1, r2, r3), grab(steelKey), X).
+% move(state(r2, r1, r2, r3), grab(brassKey), X).
+% move(state(r3, r1, r2, r3), grab(package), X).
+
 
 %canget(State1) :- move(State1, Move, State2), canget(State2). 
 
