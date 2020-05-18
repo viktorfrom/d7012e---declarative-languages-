@@ -35,9 +35,9 @@ p1 = fromString  ("\
 
 sp = putStr (toString p)
 
-rp = Program.exec p [3,16]
+rp = Program.exec p [3,16] -- [3,6,9,12,15]
 
-rp1 = Program.exec p1 [1024, 2]
+rp1 = Program.exec p1 [1024, 2] -- [0,0,0,0,0,0,0,0,0,0,1,10000000000]
 
 
 

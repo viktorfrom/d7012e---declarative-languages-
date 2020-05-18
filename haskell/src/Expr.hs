@@ -77,7 +77,7 @@ value (Sub t u) dict = (value t dict) - (value u dict)
 value (Mul t u) dict = (value t dict) * (value u dict)
 value (Div t u) dict
   | (value u dict)==0 = error("Invalid input: division by zero!")
-  | otherwise = (value t dict) + (value u dict)
+  | otherwise = (value t dict) `div` (value u dict)
 value (Var v) dict = case Dictionary.lookup v dict of
                      Just v -> v
                      Nothing -> error ("Invalid input: undefined variable!")
