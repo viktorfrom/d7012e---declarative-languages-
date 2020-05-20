@@ -37,25 +37,21 @@ move(State, Move, NextState) :-
     State = state(Room, Room, BrassKey, Package),
     Move = grab(steelKey),
     NextState = state(Room, inventory, BrassKey, Package),
-    NextState \= state(_, inventory, inventory, inventory).
-    
-    %\+(state(_, inventory, inventory, inventory) = NextState).
+    \+(state(_, inventory, inventory, inventory) = NextState).
 
 % Grab brass key.
 move(State, Move, NextState) :-
     State = state(Room, SteelKey, Room, Package),
     Move = grab(brassKey),
     NextState = state(Room, SteelKey, inventory, Package),
-    NextState \= state(_, inventory, inventory, inventory).
-    %\+(state(_, inventory, inventory, inventory) = NextState).
+    \+(state(_, inventory, inventory, inventory) = NextState).
 
 % Grab package.
 move(State, Move, NextState) :-
     State = state(Room, SteelKey, BrassKey, Room),
     Move = grab(package),
     NextState = state(Room, SteelKey, BrassKey, inventory),
-    NextState \= state(_, inventory, inventory, inventory).
-    %\+(state(_, inventory, inventory, inventory) = NextState).
+    \+(state(_, inventory, inventory, inventory) = NextState).
 
 % Drop steel key.
 move(State, Move, NextState) :-
