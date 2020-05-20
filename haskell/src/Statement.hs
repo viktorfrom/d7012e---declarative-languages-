@@ -1,3 +1,5 @@
+-- Code to Haskell lab assignment 3 in the course D7012E by Viktor From
+
 module Statement(T, parse, toString, fromString, exec) where
 import Prelude hiding (return, fail)
 import Parser hiding (T)

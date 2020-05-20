@@ -1,3 +1,5 @@
+-- Code to Haskell lab assignment 3 in the course D7012E by Viktor From
+
 module Parser(module CoreParser, T, digit, digitVal, chars, letter, err,
               lit, number, iter, accept, require, token,
               spaces, word, (-#), (#-)) where

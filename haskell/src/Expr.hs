@@ -1,3 +1,5 @@
+-- Code to Haskell lab assignment 3 in the course D7012E by Viktor From
+
 module Expr(Expr, T, parse, fromString, value, toString) where
 
 {-

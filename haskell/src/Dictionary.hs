@@ -1,3 +1,5 @@
+-- Code to Haskell lab assignment 3 in the course D7012E by Viktor From
+
 module Dictionary (T, empty, lookup, insert) where
 import Prelude hiding (lookup)
 import qualified Prelude
