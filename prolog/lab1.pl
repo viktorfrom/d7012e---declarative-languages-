@@ -8,62 +8,72 @@
 % move(state1, Move, state2)
 % State1 -> Move -> State2
 
-
 % Move from room 1 to room 2.
-move(state(r1, inventory, BrassKey, Package),
-     walk(r1, r2),
-     state(r2, inventory, BrassKey, Package)). 
+move(State, Move, NextState) :- 
+     State = state(r1, inventory, BrassKey, Package),
+     Move = walk(r1, r2),
+     NextState = state(r2, inventory, BrassKey, Package).
 
 % Move from room 2 to room 1.
-move(state(r2, inventory, BrassKey, Package),
-     walk(r2, r1),
-     state(r1, inventory, BrassKey, Package)). 
+move(State, Move, NextState) :-
+     State = state(r2, inventory, BrassKey, Package),
+     Move = walk(r2, r1),
+     NextState = state(r1, inventory, BrassKey, Package).
 
 % Move from room 1 to room 3.
-move(state(r1, SteelKey, inventory, Package),
-     walk(r1, r3),
-     state(r3, SteelKey, inventory, Package)). 
+move(State, Move, NextState) :- 
+     State = state(r1, SteelKey, inventory, Package),
+     Move = walk(r1, r3),
+     NextState = state(r3, SteelKey, inventory, Package).
 
 % Move from room 3 to room 1.
-move(state(r3, SteelKey, inventory, Package),
-     walk(r3, r1),
-     state(r1, SteelKey, inventory, Package)). 
+move(State, Move, NewState) :-
+     State = state(r3, SteelKey, inventory, Package),
+     Move = walk(r3, r1),
+     NewState = state(r1, SteelKey, inventory, Package).
 
 % Grab steel key.
-move(state(Room, Room, BrassKey, Package),
-     grab(steelKey),
-     state = state(Room, inventory, BrassKey, Package)) :- 
-          state \= state(_, inventory, inventory, inventory). 
+move(State, Move, NextState) :-
+    State = state(Room, Room, BrassKey, Package),
+    Move = grab(steelKey),
+    NextState = state(Room, inventory, BrassKey, Package),
+    NextState \= state(_, inventory, inventory, inventory).
+    
+    %\+(state(_, inventory, inventory, inventory) = NextState).
 
 % Grab brass key.
-move(state(Room, SteelKey, Room, Package),
-     grab(brassKey),
-     state = state(Room, SteelKey, inventory, Package)) :-
-          state \= state(_, inventory, inventory, inventory). 
+move(State, Move, NextState) :-
+    State = state(Room, SteelKey, Room, Package),
+    Move = grab(brassKey),
+    NextState = state(Room, SteelKey, inventory, Package),
+    NextState \= state(_, inventory, inventory, inventory).
+    %\+(state(_, inventory, inventory, inventory) = NextState).
 
 % Grab package.
-move(state(Room, SteelKey, BrassKey, Room),
-     grab(package),
-     state(Room, SteelKey, BrassKey, inventory)) :- 
-          state \= state(_, inventory, inventory, inventory). 
+move(State, Move, NextState) :-
+    State = state(Room, SteelKey, BrassKey, Room),
+    Move = grab(package),
+    NextState = state(Room, SteelKey, BrassKey, inventory),
+    NextState \= state(_, inventory, inventory, inventory).
+    %\+(state(_, inventory, inventory, inventory) = NextState).
 
 % Drop steel key.
-move(state(Room, inventory, BrassKey, Package),
-     drop(steelKey),
-     state(Room, Room, BrassKey, Package)). 
+move(State, Move, NextState) :-
+    State = state(Room, inventory, BrassKey, Package),
+    Move = drop(steelKey),
+    NextState = state(Room, Room, BrassKey, Package).
 
 % Drop brass key.
-move(state(Room, SteelKey, inventory, Package),
-     drop(brassKey),
-     state(Room, SteelKey, Room, Package)). 
+move(State, Move, NextState) :- 
+     State = state(Room, SteelKey, inventory, Package),
+     Move = drop(brassKey),
+     NextState = state(Room, SteelKey, Room, Package). 
 
 % Drop package.
-move(state(Room, SteelKey, BrassKey, inventory),
-     drop(package),
-     state(Room, SteelKey, BrassKey, Room)). 
-
-canget(state( _, _, _, has)).       
-
+move(State, Move, NextState) :- 
+     State = state(Room, SteelKey, BrassKey, inventory),
+     Move = drop(package),
+     NextState = state(Room, SteelKey, BrassKey, Room).
 
 % test move.
 % move(state(r1, inventory, r2, r3), walk(r1, r2), X).
@@ -82,8 +92,11 @@ canget(state( _, _, _, has)).
 % move(state(r1, r1, inventory, r3), drop(brassKey), X).
 % move(state(r2, r1, r2, inventory), drop(package), X).
 
-%canget(State1) :- move(State1, Move, State2), canget(State2). 
+% test solveR.
+% solveR(state(r1, r1, r2, r3), 12, X).
 
-canget(state(r1, inventory, atwindow, hasnot)).
-
-%solveR(State, N, Trace).
+solveR(state(_, _, _, r2), _, ["done"]). 
+solveR(State, N, [Move|Trace]) :-
+    N > 0,
+    move(State, Move, NextState),
+    solveR(NextState, N - 1, Trace).
