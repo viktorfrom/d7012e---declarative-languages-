@@ -31,7 +31,8 @@ generate_subsets(XS, L) :-
     head(XS, Res), 
     tail(XS, Res2), 
     append([Res], Res2, L).
-
+sda
+sd
 sum_list([], 0).
 sum_list([Head|Tail], Sum) :-
    sum_list(Tail, Rest),
