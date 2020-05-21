@@ -39,4 +39,5 @@ sum_list([Head|Tail], Sum) :-
 
 head([X|_], X).
 
+
 tail([_|X], X).
