@@ -1,22 +1,13 @@
-% -- Generate subsets subroutine, left to right
-% subroutine_subsets :: [Int] -> Int -> Int -> [(Int, Int, Int, [Int])]
-% subroutine_subsets xs i j
-%   | length xs==0 = []
-%   | otherwise = (sum xs, i, j, xs) : subroutine_subsets (init xs) i (j - 1)
+% A solution to the second Prolog assignment in D7012E
+% By Viktor From
 
-% Subroutine_subsets
+% Generate subsets subroutine, left to right
 subroutine_subsets([], _, _, []).
 subroutine_subsets(XS, I, J, [ [Sum, I, J, XS] |Res]) :-
     sum_list(XS, Sum),
     init(XS, Init),
     New_J is J - 1,
     subroutine_subsets(Init, I, New_J, Res).
-
-% -- Generate subsets
-% generate_subsets :: [Int] -> Int -> Int -> [(Int, Int, Int, [Int])]
-% generate_subsets xs i j
-%   | length xs==0 = []
-%   | otherwise = subroutine_subsets xs i j ++ generate_subsets (tail xs) (i + 1) j
 
 % Generate subsets
 generate_subsets([], _, _, []).
@@ -37,11 +28,10 @@ sum_list([Head|Tail], Sum) :-
    sum_list(Tail, Rest),
    Sum is Head + Rest.
 
-% result([], "Invalid input, list empty!").
-% result(XS, Res) :-
-%     length(XS, Len),
-%     generate_subsets(XS, 1, Len, Res).
-
-head([X|_], X).
-
+% Return tail of list
 tail([_|X], X).
+
+result([], "Invalid input, list empty!").
+result(XS, Res) :-
+    length(XS, Len),
+    generate_subsets(XS, 1, Len, Res).
