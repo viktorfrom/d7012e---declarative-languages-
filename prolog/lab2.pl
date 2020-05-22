@@ -30,8 +30,14 @@ sum_list([Head|Tail], Sum) :-
 
 % Return tail of list
 tail([_|X], X).
+head([X|_], X).
 
 result([], "Invalid input, list empty!").
 result(XS, Res) :-
     length(XS, Len),
     generate_subsets(XS, 1, Len, Res).
+
+msort(List, Sorted) :-
+    result(List, XS),
+    head(XS, Head),
+    sort(0, @=<, Head, Sorted).
