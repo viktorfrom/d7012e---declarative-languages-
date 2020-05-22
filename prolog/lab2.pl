@@ -5,10 +5,12 @@
 %   | otherwise = (sum xs, i, j, xs) : subroutine_subsets (init xs) i (j - 1)
 
 % Subroutine_subsets
-subroutine_subsets(XS, I, J, L) :-
-    % sum_list(XS, Sum),
+subroutine_subsets([], _, _, []).
+subroutine_subsets(XS, I, J, [ [Sum, I, J, XS] |Res]) :-
+    sum_list(XS, Sum),
     init(XS, Init),
-    subroutine_subsets(Init, I, (J-1), L).
+    New_J is J - 1,
+    subroutine_subsets(Init, I, New_J, Res).
 
 % -- Generate subsets
 % generate_subsets :: [Int] -> Int -> Int -> [(Int, Int, Int, [Int])]
@@ -18,11 +20,11 @@ subroutine_subsets(XS, I, J, L) :-
 
 % Generate subsets
 generate_subsets([], _, _, []).
-generate_subsets(XS, I, J, [_ | Res]) :-
+generate_subsets(XS, I, J, [X | Res]) :-
     tail(XS, Tail), 
-    C is I + 1,
-    % subroutine_subsets(XS, I, J, X),
-    generate_subsets(Tail, C, J, Res).
+    New_I is I + 1,
+    subroutine_subsets(XS, I, J, X),
+    generate_subsets(Tail, New_I, J, Res).
 
 % Return list without head element
 init([_], []).
