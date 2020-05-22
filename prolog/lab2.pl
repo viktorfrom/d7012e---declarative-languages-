@@ -3,9 +3,9 @@
 
 % Generate subsets subroutine, left to right
 subroutine_subsets([], _, _, []).
-subroutine_subsets(XS, I, J, [ [Sum, I, J, XS] |Res]) :-
-    sum_list(XS, Sum),
-    init(XS, Init),
+subroutine_subsets([Head|Tail], I, J, [[Sum, I, J, [Head|Tail]]|Res]) :-
+    sum_list([Head|Tail], Sum),
+    init([Head|Tail], Init),
     New_J is J - 1,
     subroutine_subsets(Init, I, New_J, Res).
 
@@ -30,6 +30,8 @@ sum_list([Head|Tail], Sum) :-
 
 % Return tail of list
 tail([_|X], X).
+
+% Return head of list
 head([X|_], X).
 
 result([], "Invalid input, list empty!").
@@ -37,7 +39,12 @@ result(XS, Res) :-
     length(XS, Len),
     generate_subsets(XS, 1, Len, Res).
 
-msort(List, Sorted) :-
+
+sortSublists(List, Output) :-
     result(List, XS),
-    head(XS, Head),
-    sort(0, @=<, Head, Sorted).
+    sort(1, @=<, XS, Output).
+
+% sort(List, Sorted) :-
+%     result(List, XS),
+%     head(XS, Head),
+%     sort(0, @=<, Head, Sorted).
