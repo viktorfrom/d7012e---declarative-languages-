@@ -39,14 +39,15 @@ result([], "Invalid input, list empty!").
 result(XS, Res) :-
     length(XS, Len),
     generate_subsets(XS, 1, Len, Subsets),
-    sort_subsets(Subsets, Res).
+    append(Subsets, Flatten), % Flatten list of lists
+    sort_subsets(Flatten, Res).
 
 % Returns a list of sortet subsets
 sort_subsets(List, Output) :-
     sort(1, @=<, List, Output).
 
 % Return K first elements from list
-take(_, 0, [Head|Res]).
+take(_, 0, []).
 take(List, K, [Head|Res]) :- 
     head(List, Head),
     tail(List, Tail),
@@ -56,4 +57,28 @@ take(List, K, [Head|Res]) :-
 % Return K first elements from list
 k_smallest_sets(XS, K, Res) :-
     result(XS, Subsets),
-    take(Subsets, K, Res).
+    take(Subsets, K, Ksets),
+    write("Size\ti\tj\tsublist\n"),
+    format(Ksets, Res),
+    write(Res).
+
+format([], "").
+format(XS, Res) :-
+    head(XS, Head),
+    tail(XS, Tail),
+    format_subset(Head, Subset),
+    string_concat(Subset, "\n", Test2),
+    write(Test2),
+    format(Tail, Res).
+
+format_subset([], "").
+format_subset([Sum, I, J, XS], String) :- 
+	string_concat(Sum, "\t", SSum),
+	string_concat(I, "\t", SI),
+	string_concat(J, "\t", SJ),
+	atomics_to_string(XS, ",", List),
+	
+	string_concat(SSum, SI, S1),
+	string_concat(S1, SJ, S2),
+	string_concat(S2, List, String).
+
