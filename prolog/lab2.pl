@@ -59,16 +59,15 @@ k_smallest_sets(XS, K, Res) :-
     result(XS, Subsets),
     take(Subsets, K, Ksets),
     write("Size\ti\tj\tsublist\n"),
-    format(Ksets, Res),
-    write(Res).
+    format(Ksets, Res).
 
 format([], "").
 format(XS, Res) :-
     head(XS, Head),
     tail(XS, Tail),
     format_subset(Head, Subset),
-    string_concat(Subset, "\n", Test2),
-    write(Test2),
+    string_concat(Subset, "\n", Subsetnl),
+    write(Subsetnl),
     format(Tail, Res).
 
 format_subset([], "").
