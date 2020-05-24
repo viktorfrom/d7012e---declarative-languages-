@@ -12,7 +12,7 @@ subroutine_subsets([Head|Tail], I, J, [[Sum, I, J, [Head|Tail]]|Res]) :-
 % Generate subsets
 generate_subsets([], _, _, []).
 generate_subsets(XS, I, J, [X | Res]) :-
-    tail(XS, Tail), 
+    tail(XS, Tail),
     New_I is I + 1,
     subroutine_subsets(XS, I, J, X),
     generate_subsets(Tail, New_I, J, Res).
@@ -34,17 +34,26 @@ tail([_|X], X).
 % Return head of list
 head([X|_], X).
 
+% Returns a list of sorted subsets
 result([], "Invalid input, list empty!").
 result(XS, Res) :-
     length(XS, Len),
-    generate_subsets(XS, 1, Len, Res).
+    generate_subsets(XS, 1, Len, Subsets),
+    sort_subsets(Subsets, Res).
 
+% Returns a list of sortet subsets
+sort_subsets(List, Output) :-
+    sort(1, @=<, List, Output).
 
-sortSublists(List, Output) :-
-    result(List, XS),
-    sort(1, @=<, XS, Output).
+% Return K first elements from list
+take(_, 0, [Head|Res]).
+take(List, K, [Head|Res]) :- 
+    head(List, Head),
+    tail(List, Tail),
+    New_K is K - 1,
+    take(Tail, New_K, Res).
 
-% sort(List, Sorted) :-
-%     result(List, XS),
-%     head(XS, Head),
-%     sort(0, @=<, Head, Sorted).
+% Return K first elements from list
+k_smallest_sets(XS, K, Res) :-
+    result(XS, Subsets),
+    take(Subsets, K, Res).
