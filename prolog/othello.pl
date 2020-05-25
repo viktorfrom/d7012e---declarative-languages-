@@ -10,7 +10,7 @@
 
 
 
-%do not chagne the follwoing line!
+%do not change the following line!
 :- ensure_loaded('play.pl').
 
 
@@ -80,7 +80,8 @@ initBoard([ [.,.,.,.,.,.],
 %%%  holds iff InitialState is the initial state and 
 %%%  InitialPlyr is the player who moves first. 
 
-
+initialize(Board, 1) :- initBoard(Board).
+% initialize([[.,.,.,.,.,.],[.,.,.,.,.,.],[.,.,1,2,.,.],[.,.,2,1,.,.],[.,.,.,.,.,.],[.,.,.,.,.,.]], 1).
 
 
 
@@ -92,9 +93,21 @@ initBoard([ [.,.,.,.,.,.],
 %     - returns winning player if State is a terminal position and
 %     Plyr has a higher score than the other player 
 
+winner(Board, Winner) :-
+    append(Board, Flatten),
+    atomic_list_concat(Flatten, "", Atom),
+    atom_string(Atom, String),
+    occurences(String, 1, Plyr1),
+    occurences(String, 2, Plyr2),
+    min(Plyr1, Plyr2, Winner).
+    
+occurences(Atom, Ch, N) :-
+    aggregate_all(count, sub_atom(Atom, _,_,_, Ch), N).
 
-
-
+min(X, Y, Z) :-
+    (X >= Y
+    -> Z = 1
+    ;Z = 2).
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
