@@ -109,6 +109,9 @@ min(X, Y, Z) :-
     -> Z = 1
     ;Z = 2).
 
+    
+%winner([[.,.,.,.,.,.],[.,.,.,.,.,.],[.,.,1,2,.,.],[.,.,2,1,.,.],[.,.,.,.,.,.],[.,.,.,.,.,1]], R).
+
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%tie(...)%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -117,7 +120,13 @@ min(X, Y, Z) :-
 %    - true if terminal State is a "tie" (no winner) 
 
 
-
+tie(Board) :- 
+    append(Board, Flatten),
+    atomic_list_concat(Flatten, "", Atom),
+    atom_string(Atom, String),
+    occurences(String, 1, Plyr1),
+    occurences(String, 2, Plyr2),
+    Plyr1 = Plyr2.
 
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
