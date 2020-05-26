@@ -192,6 +192,19 @@ printList([H | L]) :-
 %% define validmove(Plyr,State,Proposed). 
 %   - true if Proposed move by Plyr is valid at State.
 
+
+pos_player(Plyr, Board, X, Y) :- 
+    get(Board, [X, Y], Value),
+    Value == Plyr.
+
+pos_opponent(Plyr, Board, X, Y) :- 
+    get(Board, [X, Y], Value),
+    Value \= Plyr.
+
+pos_empty(Board, X, Y) :- 
+    get(Board, [X, Y], Value),
+    Value == '.'.
+
 % locations for 8 winds direction
 nw(X, Y, NW_X, NW_Y) :- 
     NW_X is X - 1,
