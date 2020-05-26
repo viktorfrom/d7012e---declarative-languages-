@@ -193,56 +193,64 @@ printList([H | L]) :-
 %   - true if Proposed move by Plyr is valid at State.
 
 
-pos_player(Plyr, Board, X, Y) :- 
+valid_move(Plyr, Board, Proposed) :- 
+    pos_empty(Board, Proposed),
+    nw(Proposed, Nw),
+    pos_opponent(Plyr, Board, Nw).
+
+% Check if pos has players stone
+pos_player(Plyr, Board, [X, Y]) :- 
     get(Board, [X, Y], Value),
     Value == Plyr.
 
-pos_opponent(Plyr, Board, X, Y) :- 
+% Check if pos has opponents stone
+pos_opponent(Plyr, Board, [X, Y]) :- 
     get(Board, [X, Y], Value),
-    Value \= Plyr.
+    (Plyr = 1 -> Value == 2
+    ;Value == 1).
+   
 
-pos_empty(Board, X, Y) :- 
+% Check if pos is empty
+pos_empty(Board, [X, Y]) :- 
     get(Board, [X, Y], Value),
     Value == '.'.
 
 % locations for 8 winds direction
-nw(X, Y, NW_X, NW_Y) :- 
+nw([X, Y], [NW_X, NW_Y]) :- 
     NW_X is X - 1,
     NW_X >= 0,
     NW_Y is Y - 1,
     NW_Y >= 0.
 
-nn(Y, NN_Y) :- 
+nn([X, Y], [X, NN_Y]) :- 
     NN_Y is Y - 1,
     NN_Y >= 0.
 
-ne(X, Y, NE_X, NE_Y) :- 
+ne([X, Y],[NE_X, NE_Y]) :- 
     NE_X is X + 1,
     NE_X < 6,
     NE_Y is Y - 1,
     NE_Y >= 0.
 
-
-ww(X, WW_X) :-
+ww([X, Y], [WW_X, Y]) :-
     WW_X is X - 1,
     WW_X >= 0.
 
-ee(X, EE_X) :-
+ee([X, Y], [EE_X, Y]) :-
     EE_X is X + 1,
     EE_X < 6.
 
-
-sw(X, Y, SW_X, SW_Y) :- 
+sw([X, Y], [SW_X, SW_Y]) :- 
     SW_X is X - 1,
     SW_X >= 0,
     SW_Y is Y + 1,
     SW_Y < 6.
 
-ss(Y, SS_Y) :- 
+ss([X, Y], [X, SS_Y]) :- 
     SS_Y is Y + 1,
     SS_Y < 6.
 
-se(X, Y, SE_X, SE_Y) :- 
+se([X, Y], [SE_X, SE_Y]) :- 
     SE_X is X + 1,
     SE_X < 6,
     SE_Y is Y + 1,
