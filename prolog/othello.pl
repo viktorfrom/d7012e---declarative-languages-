@@ -94,6 +94,7 @@ initialize(Board, 1) :- initBoard(Board).
 %     Plyr has a higher score than the other player 
 
 winner(Board, Winner) :-
+    terminal(Board),
     append(Board, Flatten),
     atomic_list_concat(Flatten, "", Atom),
     atom_string(Atom, String),
@@ -109,7 +110,6 @@ min(X, Y, Z) :-
     -> Z = 1
     ;Z = 2).
 
-    
 %winner([[.,.,.,.,.,.],[.,.,.,.,.,.],[.,.,1,2,.,.],[.,.,2,1,.,.],[.,.,.,.,.,.],[.,.,.,.,.,1]], R).
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
@@ -119,8 +119,8 @@ min(X, Y, Z) :-
 %% define tie(State) here. 
 %    - true if terminal State is a "tie" (no winner) 
 
-
 tie(Board) :- 
+    terminal(Board),
     append(Board, Flatten),
     atomic_list_concat(Flatten, "", Atom),
     atom_string(Atom, String),
@@ -128,15 +128,16 @@ tie(Board) :-
     occurences(String, 2, Plyr2),
     Plyr1 = Plyr2.
 
+%tie([[.,.,.,.,.,.],[.,.,.,.,.,.],[.,.,1,2,.,.],[.,.,2,1,.,.],[.,.,.,.,.,.],[.,.,.,.,.,1]]).
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%terminal(...)%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
 %% define terminal(State). 
-%   - true if State is a terminal   
+%   - true if State is a terminal, (neither players can make a move)
 
-
+terminal(State) :- true.
 
 
 
@@ -172,7 +173,6 @@ printList([H | L]) :-
 
 
 
-
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
 %%%%%%%%%%%%%%nextState(Plyr,Move,State,NewState,NextPlyr)%%%%%%%%%%%%%%%%%%%%
@@ -193,7 +193,7 @@ printList([H | L]) :-
 %% define validmove(Plyr,State,Proposed). 
 %   - true if Proposed move by Plyr is valid at State.
 
-
+	
 
 
 
