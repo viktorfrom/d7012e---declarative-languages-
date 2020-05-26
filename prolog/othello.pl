@@ -170,7 +170,7 @@ printList([H | L]) :-
 %   - returns list MvList of all legal moves Plyr can make in State
 %
 
-
+moves(Plyr, State, MvList) :- 
 
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
@@ -193,8 +193,48 @@ printList([H | L]) :-
 %% define validmove(Plyr,State,Proposed). 
 %   - true if Proposed move by Plyr is valid at State.
 
-	
+% locations for 8 winds direction
+nw(X, Y, NW_X, NW_Y) :- 
+    NW_X is X - 1,
+    NW_X >= 0,
+    NW_Y is Y - 1,
+    NW_Y >= 0.
 
+nn(X, Y, NN_Y) :- 
+    NN_Y is Y - 1,
+    NN_Y >= 0.
+
+ne(X, Y, NE_X, NE_Y) :- 
+    NE_X is X + 1,
+    NE_X < 6,
+    NE_Y is Y - 1,
+    NE_Y >= 0.
+
+
+ww(X, Y, WW_X) :-
+    WW_X is X - 1,
+    WW_X >= 0,
+
+ee(X, Y, EE_X) :-
+    EE_X is X + 1.
+    EE_X < 6,
+
+
+sw(X, Y, SW_X, SW_Y) :- 
+    SW_X is X - 1,
+    SW_X >= 0,
+    SW_Y is Y + 1,
+    SW_Y < 6.
+
+ss(X, Y, SS_Y) :- 
+    SS_Y is Y + 1,
+    SS_Y < 6.
+
+se(X, Y, SE_X, SE_Y) :- 
+    SE_X is X + 1,
+    SE_X < 6,
+    SE_Y is Y + 1,
+    SE_Y < 6.
 
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
