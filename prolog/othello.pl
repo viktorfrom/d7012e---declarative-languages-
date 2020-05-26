@@ -193,10 +193,6 @@ printList([H | L]) :-
 %   - true if Proposed move by Plyr is valid at State.
 
 
-valid_move(Plyr, Board, Proposed) :- 
-    pos_empty(Board, Proposed),
-    nw(Proposed, Nw),
-    pos_opponent(Plyr, Board, Nw).
 
 % Check if pos has players stone
 pos_player(Plyr, Board, [X, Y]) :- 
@@ -214,6 +210,14 @@ pos_opponent(Plyr, Board, [X, Y]) :-
 pos_empty(Board, [X, Y]) :- 
     get(Board, [X, Y], Value),
     Value == '.'.
+
+% Check if NW pos is valid
+nw_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
+nw_valid(Plyr, Board, Proposed) :- 
+    pos_opponent(Plyr, Board, Proposed),
+    nw(Proposed, NW),
+    nw_valid(Plyr, Board, NW).
+
 
 % locations for 8 winds direction
 nw([X, Y], [NW_X, NW_Y]) :- 
