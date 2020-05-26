@@ -38,12 +38,7 @@ stack ghci (:q to quit)
 ## Build and usage
 Start Prolog
 ```
-swpl
-```
-
-Load program
-```
-[my-project.pl].
+swipl [my-project.pl].
 ```
 
 ## Authors
