@@ -94,7 +94,7 @@ initialize(Board, 1) :- initBoard(Board).
 %     Plyr has a higher score than the other player 
 
 winner(Board, Winner) :-
-    terminal(Board),
+	%terminal(Board),
     append(Board, Flatten),
     atomic_list_concat(Flatten, "", Atom),
     atom_string(Atom, String),
@@ -120,7 +120,7 @@ min(X, Y, Z) :-
 %    - true if terminal State is a "tie" (no winner) 
 
 tie(Board) :- 
-    terminal(Board),
+	%terminal(Board),
     append(Board, Flatten),
     atomic_list_concat(Flatten, "", Atom),
     atom_string(Atom, String),
@@ -137,7 +137,7 @@ tie(Board) :-
 %% define terminal(State). 
 %   - true if State is a terminal, (neither players can make a move)
 
-terminal(State) :- true.
+% terminal(State) :- State == State.
 
 
 
@@ -170,7 +170,6 @@ printList([H | L]) :-
 %   - returns list MvList of all legal moves Plyr can make in State
 %
 
-moves(Plyr, State, MvList) :- 
 
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
@@ -200,7 +199,7 @@ nw(X, Y, NW_X, NW_Y) :-
     NW_Y is Y - 1,
     NW_Y >= 0.
 
-nn(X, Y, NN_Y) :- 
+nn(Y, NN_Y) :- 
     NN_Y is Y - 1,
     NN_Y >= 0.
 
@@ -211,13 +210,13 @@ ne(X, Y, NE_X, NE_Y) :-
     NE_Y >= 0.
 
 
-ww(X, Y, WW_X) :-
+ww(X, WW_X) :-
     WW_X is X - 1,
-    WW_X >= 0,
+    WW_X >= 0.
 
-ee(X, Y, EE_X) :-
-    EE_X is X + 1.
-    EE_X < 6,
+ee(X, EE_X) :-
+    EE_X is X + 1,
+    EE_X < 6.
 
 
 sw(X, Y, SW_X, SW_Y) :- 
@@ -226,7 +225,7 @@ sw(X, Y, SW_X, SW_Y) :-
     SW_Y is Y + 1,
     SW_Y < 6.
 
-ss(X, Y, SS_Y) :- 
+ss(Y, SS_Y) :- 
     SS_Y is Y + 1,
     SS_Y < 6.
 
