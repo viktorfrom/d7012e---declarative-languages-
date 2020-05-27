@@ -172,6 +172,23 @@ printList([H | L]) :-
 
 
 
+% "Loops" through all pos on board, appends to MvList if valid move
+
+%moves(_, [], []).
+%moves(Plyr, Board, MyList) :- 
+
+
+rows([], _, _, _).
+rows([Head|Tail], X, Y, [X, Y]) :-
+    write(Head), nl, 
+    rows(Tail, X, Y, [X, Y]).
+
+
+columns([[]]).
+columns([Head|Tail]) :-
+    rows(Head)
+    columns(Tail).
+
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
 %%%%%%%%%%%%%%nextState(Plyr,Move,State,NewState,NextPlyr)%%%%%%%%%%%%%%%%%%%%
@@ -218,56 +235,47 @@ pos_empty(Board, [X, Y]) :-
     get(Board, [X, Y], Value),
     Value == '.'.
 
-% nw_valid(1, [[1,.,.],[.,2,.],[.,.,2]], [2,2]).
 nw_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
 nw_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     nw(Proposed, NW),
     nw_valid(Plyr, Board, NW).
 
-% nn_valid(1, [[.,1,.],[.,2,.],[.,2,.]], [1,2]).
 nn_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
 nn_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     nn(Proposed, NN),
     nn_valid(Plyr, Board, NN).
-
-% ne_valid(1, [[.,.,1],[.,2,.],[2,.,.]], [0,2]).
 ne_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
 ne_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     ne(Proposed, NE),
     ne_valid(Plyr, Board, NE).
 
-% ww_valid(1, [[.,.,.],[1,2,2],[.,.,.]], [2,1]).
 ww_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
 ww_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     ww(Proposed, WW),
     ww_valid(Plyr, Board, WW).
 
-% ee_valid(1, [[.,.,.],[2,2,1],[.,.,.]], [0,1]).
 ee_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
 ee_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     ee(Proposed, EE),
     ee_valid(Plyr, Board, EE).
 
-% sw_valid(1, [[.,.,2],[.,2,.],[1,.,.]], [2,0]).
 sw_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
 sw_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     sw(Proposed, SW),
     sw_valid(Plyr, Board, SW).
 
-% ss_valid(1, [[.,2,.],[.,2,.],[.,1,.]], [1,0]).
 ss_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
 ss_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     ss(Proposed, SS),
     ss_valid(Plyr, Board, SS).
 
-% se_valid(1, [[2,.,.],[.,2,.],[.,.,1]], [0,0]).
 se_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
 se_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
