@@ -193,6 +193,9 @@ printList([H | L]) :-
 %   - true if Proposed move by Plyr is valid at State.
 
 
+valid_move(Plyr, Board, Proposed) :- 
+    pos_empty(Board, Proposed),
+    ne_valid(Plyr, Board, Proposed.
 
 % Check if pos has players stone
 pos_player(Plyr, Board, [X, Y]) :- 
@@ -211,13 +214,62 @@ pos_empty(Board, [X, Y]) :-
     get(Board, [X, Y], Value),
     Value == '.'.
 
-% Check if NW pos is valid
+
+% nw_valid(1, [[1,.,.],[.,2,.],[.,.,2]], [2,2]).
 nw_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
 nw_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     nw(Proposed, NW),
     nw_valid(Plyr, Board, NW).
 
+% nn_valid(1, [[.,1,.],[.,2,.],[.,2,.]], [1,2]).
+nn_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
+nn_valid(Plyr, Board, Proposed) :- 
+    pos_opponent(Plyr, Board, Proposed),
+    nn(Proposed, NN),
+    nn_valid(Plyr, Board, NN).
+
+% ne_valid(1, [[.,.,1],[.,2,.],[2,.,.]], [0,2]).
+ne_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
+ne_valid(Plyr, Board, Proposed) :- 
+    pos_opponent(Plyr, Board, Proposed),
+    ne(Proposed, NE),
+    ne_valid(Plyr, Board, NE).
+
+% ww_valid(1, [[.,.,.],[1,2,2],[.,.,.]], [2,1]).
+ww_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
+ww_valid(Plyr, Board, Proposed) :- 
+    pos_opponent(Plyr, Board, Proposed),
+    ww(Proposed, WW),
+    ww_valid(Plyr, Board, WW).
+
+% ee_valid(1, [[.,.,.],[2,2,1],[.,.,.]], [0,1]).
+ee_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
+ee_valid(Plyr, Board, Proposed) :- 
+    pos_opponent(Plyr, Board, Proposed),
+    ee(Proposed, EE),
+    ee_valid(Plyr, Board, EE).
+
+% sw_valid(1, [[.,.,2],[.,2,.],[1,.,.]], [2,0]).
+sw_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
+sw_valid(Plyr, Board, Proposed) :- 
+    pos_opponent(Plyr, Board, Proposed),
+    sw(Proposed, SW),
+    sw_valid(Plyr, Board, SW).
+
+% ss_valid(1, [[.,2,.],[.,2,.],[.,1,.]], [1,0]).
+ss_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
+ss_valid(Plyr, Board, Proposed) :- 
+    pos_opponent(Plyr, Board, Proposed),
+    ss(Proposed, SS),
+    ss_valid(Plyr, Board, SS).
+
+% se_valid(1, [[2,.,.],[.,2,.],[.,.,1]], [0,0]).
+se_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
+se_valid(Plyr, Board, Proposed) :- 
+    pos_opponent(Plyr, Board, Proposed),
+    se(Proposed, SE),
+    se_valid(Plyr, Board, SE).
 
 % locations for 8 winds direction
 nw([X, Y], [NW_X, NW_Y]) :- 
@@ -226,7 +278,9 @@ nw([X, Y], [NW_X, NW_Y]) :-
     NW_Y is Y - 1,
     NW_Y >= 0.
 
-nn([X, Y], [X, NN_Y]) :- 
+nn([X, Y], [NN_X, NN_Y]) :- 
+    NN_X is X + 0,
+    NN_X >= 0,
     NN_Y is Y - 1,
     NN_Y >= 0.
 
@@ -236,13 +290,17 @@ ne([X, Y],[NE_X, NE_Y]) :-
     NE_Y is Y - 1,
     NE_Y >= 0.
 
-ww([X, Y], [WW_X, Y]) :-
+ww([X, Y], [WW_X, WW_Y]) :-
     WW_X is X - 1,
-    WW_X >= 0.
+    WW_X >= 0,
+    WW_Y is Y + 0,
+    WW_Y >= 0.
 
 ee([X, Y], [EE_X, Y]) :-
     EE_X is X + 1,
-    EE_X < 6.
+    EE_X < 6,
+    WW_Y is Y + 0,
+    WW_Y >= 0.
 
 sw([X, Y], [SW_X, SW_Y]) :- 
     SW_X is X - 1,
@@ -252,7 +310,9 @@ sw([X, Y], [SW_X, SW_Y]) :-
 
 ss([X, Y], [X, SS_Y]) :- 
     SS_Y is Y + 1,
-    SS_Y < 6.
+    SS_Y < 6,
+    SS_X is X + 0,
+    SS_X >= 0.
 
 se([X, Y], [SE_X, SE_Y]) :- 
     SE_X is X + 1,
