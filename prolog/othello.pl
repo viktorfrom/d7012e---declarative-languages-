@@ -170,28 +170,9 @@ printList([H | L]) :-
 %   - returns list MvList of all legal moves Plyr can make in State
 %
 
-
-
-% "Loops" through all pos on board, appends to MvList if valid move
-
-%moves(_, [], []).
-%moves(Plyr, Board, MyList) :- 
-
+% initialize(B, 1), showState(B), moves(1, B, R), length(R, L).
 moves(Plyr, State, MvList) :- 
     findall([X, Y], validmove(Plyr, State, [X, Y]), MvList).
-
-
-
-
-
-
-
-rows([], _, _, _).
-rows([Head|Tail], X, Y, [[X, Y]|Res]) :-
-    write(Head), nl, 
-    (X < 6 -> NX is X + 1),
-    rows(Tail, NX, Y, Res).
-
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
@@ -203,8 +184,35 @@ rows([Head|Tail], X, Y, [[X, Y]|Res]) :-
 %
 
 
+nw_flip(Plyr, Board, Proposed, NewBoard) :- 
+    pos_player(Plyr, Board, Proposed),
+    NewBoard = Board.
+nw_flip(Plyr, Board, Proposed, NewBoard) :- 
+    pos_opponent(Plyr, Board, Proposed) -> 
+        set(Board, NextBoard, Proposed, Plyr),
+        nw(Proposed, NW),
+        nw_flip(Plyr, NextBoard, NW, NewBoard);
+	NewBoard = Board.
 
+nn_flip(Plyr, Board, Proposed, NewBoard) :- 
+    pos_player(Plyr, Board, Proposed),
+    NewBoard = Board.
+nn_flip(Plyr, Board, Proposed, NewBoard) :- 
+    pos_opponent(Plyr, Board, Proposed) -> 
+        set(Board, NextBoard, Proposed, Plyr),
+        nn(Proposed, NN),
+        nn_flip(Plyr, NextBoard, NN, NewBoard);
+	NewBoard = Board.
 
+ne_flip(Plyr, Board, Proposed, NewBoard) :- 
+    pos_player(Plyr, Board, Proposed),
+    NewBoard = Board.
+ne_flip(Plyr, Board, Proposed, NewBoard) :- 
+    pos_opponent(Plyr, Board, Proposed) -> 
+        set(Board, NextBoard, Proposed, Plyr),
+        ne(Proposed, NE),
+        ne_flip(Plyr, NextBoard, NE, NewBoard);
+	NewBoard = Board.
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
@@ -213,10 +221,7 @@ rows([Head|Tail], X, Y, [[X, Y]|Res]) :-
 %% define validmove(Plyr,State,Proposed). 
 %   - true if Proposed move by Plyr is valid at State.
 
-
-
-% initialize(B, 1), showState(B), moves(1, B, R), length(R, L).
-
+% Check if move is valid
 validmove(Plyr, Board, Proposed) :- 
     pos_empty(Board, Proposed),
     (nw(Proposed, NW), pos_opponent(Plyr, Board, NW)
@@ -272,6 +277,7 @@ pos_empty(Board, [X, Y]) :-
     get(Board, [X, Y], Value),
     Value == '.'.
 
+% Check valid directions
 nw_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
 nw_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
