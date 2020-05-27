@@ -177,21 +177,21 @@ printList([H | L]) :-
 %moves(_, [], []).
 %moves(Plyr, Board, MyList) :- 
 
+moves(Plyr, State, MvList) :- 
+    findall([X, Y], validmove(Plyr, State, [X, Y]), MvList).
+
+
+
+
+
+
 
 rows([], _, _, _).
 rows([Head|Tail], X, Y, [[X, Y]|Res]) :-
     write(Head), nl, 
-    NX is X + 1,
+    (X < 6 -> NX is X + 1),
     rows(Tail, NX, Y, Res).
 
-
-
-columns([[]]).
-columns([Head|Tail]) :-
-    rows(Head, 0, 0, R),
-    
-    write(R),
-    columns(Tail).
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
@@ -213,16 +213,49 @@ columns([Head|Tail]) :-
 %% define validmove(Plyr,State,Proposed). 
 %   - true if Proposed move by Plyr is valid at State.
 
+
+
+% initialize(B, 1), showState(B), moves(1, B, R), length(R, L).
+
 validmove(Plyr, Board, Proposed) :- 
     pos_empty(Board, Proposed),
-    (nw(Proposed, NW) -> nw_valid(Plyr, Board, NW));
-    (nn(Proposed, NN) -> nn_valid(Plyr, Board, NN));
-    (ne(Proposed, NE) -> ne_valid(Plyr, Board, NE));
-    (ww(Proposed, WW) -> ww_valid(Plyr, Board, WW));
-    (ee(Proposed, EE) -> ee_valid(Plyr, Board, EE));
-    (sw(Proposed, SW) -> sw_valid(Plyr, Board, SW));
-    (ss(Proposed, SS) -> ss_valid(Plyr, Board, SS));
-    (se(Proposed, SE) -> se_valid(Plyr, Board, SE)).
+    (nw(Proposed, NW), pos_opponent(Plyr, Board, NW)
+    -> nw_valid(Plyr, Board, NW)).
+    
+validmove(Plyr, Board, Proposed) :- 
+    pos_empty(Board, Proposed),
+    (nn(Proposed, NN), pos_opponent(Plyr, Board, NN)
+    -> nn_valid(Plyr, Board, NN)).
+
+validmove(Plyr, Board, Proposed) :- 
+    pos_empty(Board, Proposed),
+    (ne(Proposed, NE), pos_opponent(Plyr, Board, NE)
+    -> ne_valid(Plyr, Board, NE)).
+
+validmove(Plyr, Board, Proposed) :- 
+    pos_empty(Board, Proposed),
+    (ww(Proposed, WW), pos_opponent(Plyr, Board, WW)
+    -> ww_valid(Plyr, Board, WW)).
+
+validmove(Plyr, Board, Proposed) :- 
+    pos_empty(Board, Proposed),
+    (ee(Proposed, EE), pos_opponent(Plyr, Board, EE)
+    -> ee_valid(Plyr, Board, EE)).
+
+validmove(Plyr, Board, Proposed) :- 
+    pos_empty(Board, Proposed),
+    (sw(Proposed, SW), pos_opponent(Plyr, Board, SW) 
+    -> sw_valid(Plyr, Board, SW)).
+
+validmove(Plyr, Board, Proposed) :- 
+    pos_empty(Board, Proposed),
+    (ss(Proposed, SS), pos_opponent(Plyr, Board, SS) 
+    -> ss_valid(Plyr, Board, SS)).
+
+validmove(Plyr, Board, Proposed) :- 
+    pos_empty(Board, Proposed),
+    (se(Proposed, SE), pos_opponent(Plyr, Board, SE) 
+    -> se_valid(Plyr, Board, SE)).
 
 % Check if pos has players stone
 pos_player(Plyr, Board, [X, Y]) :- 
@@ -250,6 +283,7 @@ nn_valid(Plyr, Board, Proposed) :-
     pos_opponent(Plyr, Board, Proposed),
     nn(Proposed, NN),
     nn_valid(Plyr, Board, NN).
+
 ne_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
 ne_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
@@ -311,11 +345,11 @@ ww([X, Y], [WW_X, WW_Y]) :-
     WW_Y is Y + 0,
     WW_Y >= 0.
 
-ee([X, Y], [EE_X, Y]) :-
+ee([X, Y], [EE_X, EE_Y]) :-
     EE_X is X + 1,
     EE_X < 6,
-    WW_Y is Y + 0,
-    WW_Y >= 0.
+    EE_Y is Y + 0,
+    EE_Y >= 0.
 
 sw([X, Y], [SW_X, SW_Y]) :- 
     SW_X is X - 1,
@@ -323,7 +357,7 @@ sw([X, Y], [SW_X, SW_Y]) :-
     SW_Y is Y + 1,
     SW_Y < 6.
 
-ss([X, Y], [X, SS_Y]) :- 
+ss([X, Y], [SS_X, SS_Y]) :- 
     SS_Y is Y + 1,
     SS_Y < 6,
     SS_X is X + 0,
