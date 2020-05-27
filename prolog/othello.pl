@@ -192,10 +192,16 @@ printList([H | L]) :-
 %% define validmove(Plyr,State,Proposed). 
 %   - true if Proposed move by Plyr is valid at State.
 
-
-valid_move(Plyr, Board, Proposed) :- 
+validmove(Plyr, Board, Proposed) :- 
     pos_empty(Board, Proposed),
-    ne_valid(Plyr, Board, Proposed.
+    (nw(Proposed, NW) -> nw_valid(Plyr, Board, NW));
+    (nn(Proposed, NN) -> nn_valid(Plyr, Board, NN));
+    (ne(Proposed, NE) -> ne_valid(Plyr, Board, NE));
+    (ww(Proposed, WW) -> ww_valid(Plyr, Board, WW));
+    (ee(Proposed, EE) -> ee_valid(Plyr, Board, EE));
+    (sw(Proposed, SW) -> sw_valid(Plyr, Board, SW));
+    (ss(Proposed, SS) -> ss_valid(Plyr, Board, SS));
+    (se(Proposed, SE) -> se_valid(Plyr, Board, SE)).
 
 % Check if pos has players stone
 pos_player(Plyr, Board, [X, Y]) :- 
@@ -205,15 +211,12 @@ pos_player(Plyr, Board, [X, Y]) :-
 % Check if pos has opponents stone
 pos_opponent(Plyr, Board, [X, Y]) :- 
     get(Board, [X, Y], Value),
-    (Plyr = 1 -> Value == 2
-    ;Value == 1).
-   
+    (Plyr = 1 -> Value == 2 ;Value == 1).
 
 % Check if pos is empty
 pos_empty(Board, [X, Y]) :- 
     get(Board, [X, Y], Value),
     Value == '.'.
-
 
 % nw_valid(1, [[1,.,.],[.,2,.],[.,.,2]], [2,2]).
 nw_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
