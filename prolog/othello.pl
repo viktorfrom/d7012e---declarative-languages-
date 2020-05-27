@@ -179,14 +179,18 @@ printList([H | L]) :-
 
 
 rows([], _, _, _).
-rows([Head|Tail], X, Y, [X, Y]) :-
+rows([Head|Tail], X, Y, [[X, Y]|Res]) :-
     write(Head), nl, 
-    rows(Tail, X, Y, [X, Y]).
+    NX is X + 1,
+    rows(Tail, NX, Y, Res).
+
 
 
 columns([[]]).
 columns([Head|Tail]) :-
-    rows(Head)
+    rows(Head, 0, 0, R),
+    
+    write(R),
     columns(Tail).
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
