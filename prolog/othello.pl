@@ -11,7 +11,9 @@
 
 
 %do not change the following line!
-:- ensure_loaded('play.pl').
+%:- ensure_loaded('play.pl').
+:- ensure_loaded('stupid.pl').
+:- ensure_loaded('testboards2.pl').
 
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
@@ -80,8 +82,8 @@ initBoard([ [.,.,.,.,.,.],
 %%%  holds iff InitialState is the initial state and 
 %%%  InitialPlyr is the player who moves first. 
 
-initialize(Board, 1) :- initBoard(Board).
-% initialize([[.,.,.,.,.,.],[.,.,.,.,.,.],[.,.,1,2,.,.],[.,.,2,1,.,.],[.,.,.,.,.,.],[.,.,.,.,.,.]], 1).
+% initialize(Board, 1) :- initBoard(Board).
+initialize(Board, 1) :- forcing1toDoNullMoves(Board).
 
 
 
@@ -175,8 +177,11 @@ printList([H | L]) :-
 %
 
 % initialize(B, 1), showState(B), moves(1, B, R), length(R, L).
+
 moves(Plyr, State, MvList) :- 
-    findall([X, Y], validmove(Plyr, State, [X, Y]), MvList).
+    findall([X, Y], validmove(Plyr, State, [X, Y]), MvListRes),
+    length(MvListRes, L),
+    (L == 0 -> MvList = [n]; MvList = MvListRes).	    
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
@@ -188,6 +193,11 @@ moves(Plyr, State, MvList) :-
 %
 
 % Flips stones if move is valid
+nextState(Plyr, Move, State, NewState, NextPlyr) :-
+    nextPlayer(Plyr, NextPlyr),
+    Move = n,
+    validmove(Plyr, State, Move),
+    NewState = State.
 nextState(Plyr, Move, State, NewState, NextPlyr) :-
     validmove(Plyr, State, Move),
     set(State, NextState, Move, Plyr) -> 
@@ -292,6 +302,12 @@ se_flip(Plyr, Board, Proposed, NewBoard) :-
 %   - true if Proposed move by Plyr is valid at State.
 
 % Check if move is valid
+
+validmove(Plyr, Board, Proposed) :-
+   Proposed = n,
+   moves(Plyr, Board, MvList),
+   MvList = [n].
+
 validmove(Plyr, Board, Proposed) :- 
     pos_empty(Board, Proposed),
     (nw(Proposed, NW), pos_opponent(Plyr, Board, NW)
