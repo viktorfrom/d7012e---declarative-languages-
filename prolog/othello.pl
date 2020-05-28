@@ -94,7 +94,7 @@ initialize(Board, 1) :- initBoard(Board).
 %     Plyr has a higher score than the other player 
 
 winner(Board, Winner) :-
-	%terminal(Board),
+    terminal(Board),
     append(Board, Flatten),
     atomic_list_concat(Flatten, "", Atom),
     atom_string(Atom, String),
@@ -120,7 +120,7 @@ min(X, Y, Z) :-
 %    - true if terminal State is a "tie" (no winner) 
 
 tie(Board) :- 
-	%terminal(Board),
+    terminal(Board),
     append(Board, Flatten),
     atomic_list_concat(Flatten, "", Atom),
     atom_string(Atom, String),
@@ -137,7 +137,11 @@ tie(Board) :-
 %% define terminal(State). 
 %   - true if State is a terminal, (neither players can make a move)
 
-% terminal(State) :- State == State.
+terminal(State) :-
+    moves(1, State, M1),
+    moves(2, State, M2),
+    M1 == [n],
+    M2 == [n].
 
 
 
@@ -467,8 +471,6 @@ se([X, Y], [SE_X, SE_Y]) :-
 
 
 
-
-
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%upperBound(B)%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -476,7 +478,6 @@ se([X, Y], [SE_X, SE_Y]) :-
 %% define upperBound(B). 
 %   - returns a value B that is greater than the actual or heuristic value
 %     of all states.
-
 
 
 
