@@ -214,6 +214,56 @@ ne_flip(Plyr, Board, Proposed, NewBoard) :-
         ne_flip(Plyr, NextBoard, NE, NewBoard);
 	NewBoard = Board.
 
+ww_flip(Plyr, Board, Proposed, NewBoard) :- 
+    pos_player(Plyr, Board, Proposed),
+    NewBoard = Board.
+ww_flip(Plyr, Board, Proposed, NewBoard) :- 
+    pos_opponent(Plyr, Board, Proposed) -> 
+        set(Board, NextBoard, Proposed, Plyr),
+        ww(Proposed, WW),
+        ww_flip(Plyr, NextBoard, WW, NewBoard);
+	NewBoard = Board.
+
+ee_flip(Plyr, Board, Proposed, NewBoard) :- 
+    pos_player(Plyr, Board, Proposed),
+    NewBoard = Board.
+ee_flip(Plyr, Board, Proposed, NewBoard) :- 
+    pos_opponent(Plyr, Board, Proposed) -> 
+        set(Board, NextBoard, Proposed, Plyr),
+        ee(Proposed, EE),
+        ee_flip(Plyr, NextBoard, EE, NewBoard);
+	NewBoard = Board.
+
+sw_flip(Plyr, Board, Proposed, NewBoard) :- 
+    pos_player(Plyr, Board, Proposed),
+    NewBoard = Board.
+sw_flip(Plyr, Board, Proposed, NewBoard) :- 
+    pos_opponent(Plyr, Board, Proposed) -> 
+        set(Board, NextBoard, Proposed, Plyr),
+        sw(Proposed, SW),
+        sw_flip(Plyr, NextBoard, SW, NewBoard);
+	NewBoard = Board.
+
+ss_flip(Plyr, Board, Proposed, NewBoard) :- 
+    pos_player(Plyr, Board, Proposed),
+    NewBoard = Board.
+ss_flip(Plyr, Board, Proposed, NewBoard) :- 
+    pos_opponent(Plyr, Board, Proposed) -> 
+        set(Board, NextBoard, Proposed, Plyr),
+        ss(Proposed, SS),
+        ss_flip(Plyr, NextBoard, SS, NewBoard);
+	NewBoard = Board.
+
+se_flip(Plyr, Board, Proposed, NewBoard) :- 
+    pos_player(Plyr, Board, Proposed),
+    NewBoard = Board.
+se_flip(Plyr, Board, Proposed, NewBoard) :- 
+    pos_opponent(Plyr, Board, Proposed) -> 
+        set(Board, NextBoard, Proposed, Plyr),
+        se(Proposed, SE),
+        se_flip(Plyr, NextBoard, SE, NewBoard);
+	NewBoard = Board.
+
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%validmove(Plyr,State,Proposed)%%%%%%%%%%%%%%%%%%%%
