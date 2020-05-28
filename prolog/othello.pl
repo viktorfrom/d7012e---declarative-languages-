@@ -187,6 +187,7 @@ moves(Plyr, State, MvList) :-
 %     state) and NextPlayer (i.e. the next player who will move).
 %
 
+% Flips stones if move is valid
 nextState(Plyr, Move, State, NewState, NextPlyr) :-
     validmove(Plyr, State, Move),
     set(State, NextState, Move, Plyr) -> 
@@ -457,7 +458,19 @@ se([X, Y], [SE_X, SE_Y]) :-
 %          the value of state (see handout on ideas about
 %          good heuristics.
 
+h(State, -36) :-
+    winner(State, 1).
 
+h(State, 36) :-
+    winner(State, 2).
+
+h(State, 0) :-
+    tie(State).
+
+h(State, Val) :-
+    score(State, 1, State1),
+    score(State, 2, State2),
+    Val is State2 - State1.
 
 
 
@@ -469,6 +482,7 @@ se([X, Y], [SE_X, SE_Y]) :-
 %   - returns a value B that is less than the actual or heuristic value
 %     of all states.
 
+lowerBound(-37).
 
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
@@ -480,6 +494,7 @@ se([X, Y], [SE_X, SE_Y]) :-
 %     of all states.
 
 
+upperBound(37).
 
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
