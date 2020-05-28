@@ -183,6 +183,21 @@ moves(Plyr, State, MvList) :-
 %     state) and NextPlayer (i.e. the next player who will move).
 %
 
+nextState(Plyr, Move, State, NewState, NextPlyr) :-
+    validmove(Plyr, State, Move),
+    set(State, NextState, Move, Plyr) -> 
+    nw(Move, NW), nw_flip(Plyr, NextState, NW, StateNW),
+    nn(Move, NN), nn_flip(Plyr, StateNW, NN,  StateNN),
+    ne(Move, NE), ne_flip(Plyr, StateNN, NE, StateNE),
+    ww(Move, WW), ww_flip(Plyr, StateNE, WW, StateWW),
+    ee(Move, EE), ee_flip(Plyr, StateWW, EE, StateEE),
+    sw(Move, SW), sw_flip(Plyr, StateEE, SW, StateSW),
+    ss(Move, SS), ss_flip(Plyr, StateSW, SS, StateSS),
+    se(Move, SE), se_flip(Plyr, StateSS, SE, NewState),
+    nextPlayer(Plyr, NextPlyr).
+
+nextPlayer(1,2).
+nextPlayer(2,1).
 
 nw_flip(Plyr, Board, Proposed, NewBoard) :- 
     pos_player(Plyr, Board, Proposed),
