@@ -11,9 +11,9 @@
 
 
 %do not change the following line!
-%:- ensure_loaded('play.pl').
-:- ensure_loaded('stupid.pl').
-:- ensure_loaded('testboards2.pl').
+:- ensure_loaded('play.pl').
+%:- ensure_loaded('stupid.pl').
+%:- ensure_loaded('testboards2.pl').
 
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
@@ -99,13 +99,17 @@ initialize(Board, 1) :- initBoard(Board).
 
 winner(Board, Winner) :-
     terminal(Board),
+    plyr_score(Board, 1, Plyr1),
+    plyr_score(Board, 2, Plyr2),
+    min(Plyr1, Plyr2, Winner).
+    
+
+plyr_score(Board, Plyr, Score) :- 
     append(Board, Flatten),
     atomic_list_concat(Flatten, "", Atom),
     atom_string(Atom, String),
-    occurences(String, 1, Plyr1),
-    occurences(String, 2, Plyr2),
-    min(Plyr1, Plyr2, Winner).
-    
+    occurences(String, Plyr, Score).
+
 occurences(Atom, Ch, N) :-
     aggregate_all(count, sub_atom(Atom, _,_,_, Ch), N).
 
@@ -114,7 +118,6 @@ min(X, Y, Z) :-
     -> Z = 1
     ;Z = 2).
 
-%winner([[.,.,.,.,.,.],[.,.,.,.,.,.],[.,.,1,2,.,.],[.,.,2,1,.,.],[.,.,.,.,.,.],[.,.,.,.,.,1]], R).
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
@@ -125,14 +128,10 @@ min(X, Y, Z) :-
 
 tie(Board) :- 
     terminal(Board),
-    append(Board, Flatten),
-    atomic_list_concat(Flatten, "", Atom),
-    atom_string(Atom, String),
-    occurences(String, 1, Plyr1),
-    occurences(String, 2, Plyr2),
+    plyr_score(Board, 1, Plyr1),
+    plyr_score(Board, 2, Plyr2),
     Plyr1 = Plyr2.
 
-%tie([[.,.,.,.,.,.],[.,.,.,.,.,.],[.,.,1,2,.,.],[.,.,2,1,.,.],[.,.,.,.,.,.],[.,.,.,.,.,1]]).
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
@@ -198,23 +197,19 @@ moves(Plyr, State, MvList) :-
 nextState(Plyr, n, State, State, NextPlyr) :-
     nextPlayer(Plyr, NextPlyr).
 nextState(Plyr, Move, State, NewState, NextPlyr) :-
-    nw_flip(Plyr, NextState, NW, StateNW),
-    write("1"),
-    nn_flip(Plyr, StateNW, NN, StateNN),
-    write("2"),
-    ne_flip(Plyr, StateNN, NE, StateNE),
-    write("3"),
-    ww_flip(Plyr, StateNE, WW, StateWW),
-    write("4"),
-    ee_flip(Plyr, StateWW, EE, StateEE),
-    write("5"),
-    sw_flip(Plyr, StateEE, SW, StateSW),
-    write("6"),
-    ss_flip(Plyr, StateSW, SS, StateSS),
-    write("7"),
-    se_flip(Plyr, StateSS, SE, NewState),
-    write("8"),
-    nextPlayer(Plyr, NextPlyr).
+    validmove(Plyr, State, Move),
+      set(State, NextState, Move, Plyr),
+      nw(Move, NW), nw_flip(Plyr, NextState, NW, StateNW),
+      nn(Move, NN), nn_flip(Plyr, StateNW, NN, StateNN),
+      ne(Move, NE), ne_flip(Plyr, StateNN, NE, StateNE),
+      ww(Move, WW), ww_flip(Plyr, StateNE, WW, StateWW),
+      ee(Move, EE), ee_flip(Plyr, StateWW, EE, StateEE),
+      sw(Move, SW), sw_flip(Plyr, StateEE, SW, StateSW),
+      ss(Move, SS), ss_flip(Plyr, StateSW, SS, StateSS),
+      se(Move, SE), se_flip(Plyr, StateSS, SE, NewState),
+      nextPlayer(Plyr, NextPlyr).
+
+% TODO, POINTS OUT OF BOUNDS? 
 
 nextPlayer(1, 2).
 nextPlayer(2, 1).
@@ -223,7 +218,7 @@ nw_flip(Plyr, Board, Proposed, NewBoard) :-
     pos_player(Plyr, Board, Proposed),
     NewBoard = Board.
 nw_flip(Plyr, Board, Proposed, NewBoard) :- 
-    validmove(Plyr, Board, Proposed) -> 
+    pos_opponent(Plyr, Board, Proposed) -> 
         set(Board, NextBoard, Proposed, Plyr),
         nw(Proposed, NW),
         nw_flip(Plyr, NextBoard, NW, NewBoard);
@@ -233,7 +228,7 @@ nn_flip(Plyr, Board, Proposed, NewBoard) :-
     pos_player(Plyr, Board, Proposed),
     NewBoard = Board.
 nn_flip(Plyr, Board, Proposed, NewBoard) :- 
-    validmove(Plyr, Board, Proposed) -> 
+    pos_opponent(Plyr, Board, Proposed) -> 
         set(Board, NextBoard, Proposed, Plyr),
         nn(Proposed, NN),
         nn_flip(Plyr, NextBoard, NN, NewBoard);
@@ -243,7 +238,7 @@ ne_flip(Plyr, Board, Proposed, NewBoard) :-
     pos_player(Plyr, Board, Proposed),
     NewBoard = Board.
 ne_flip(Plyr, Board, Proposed, NewBoard) :- 
-    validmove(Plyr, Board, Proposed) -> 
+    pos_opponent(Plyr, Board, Proposed) -> 
         set(Board, NextBoard, Proposed, Plyr),
         ne(Proposed, NE),
         ne_flip(Plyr, NextBoard, NE, NewBoard);
@@ -253,7 +248,7 @@ ww_flip(Plyr, Board, Proposed, NewBoard) :-
     pos_player(Plyr, Board, Proposed),
     NewBoard = Board.
 ww_flip(Plyr, Board, Proposed, NewBoard) :- 
-    validmove(Plyr, Board, Proposed) -> 
+    pos_opponent(Plyr, Board, Proposed) -> 
         set(Board, NextBoard, Proposed, Plyr),
         ww(Proposed, WW),
         ww_flip(Plyr, NextBoard, WW, NewBoard);
@@ -263,7 +258,7 @@ ee_flip(Plyr, Board, Proposed, NewBoard) :-
     pos_player(Plyr, Board, Proposed),
     NewBoard = Board.
 ee_flip(Plyr, Board, Proposed, NewBoard) :- 
-    validmove(Plyr, Board, Proposed) -> 
+    pos_opponent(Plyr, Board, Proposed) -> 
         set(Board, NextBoard, Proposed, Plyr),
         ee(Proposed, EE),
         ee_flip(Plyr, NextBoard, EE, NewBoard);
@@ -273,7 +268,7 @@ sw_flip(Plyr, Board, Proposed, NewBoard) :-
     pos_player(Plyr, Board, Proposed),
     NewBoard = Board.
 sw_flip(Plyr, Board, Proposed, NewBoard) :- 
-    validmove(Plyr, Board, Proposed) -> 
+    pos_opponent(Plyr, Board, Proposed) -> 
         set(Board, NextBoard, Proposed, Plyr),
         sw(Proposed, SW),
         sw_flip(Plyr, NextBoard, SW, NewBoard);
@@ -283,7 +278,7 @@ ss_flip(Plyr, Board, Proposed, NewBoard) :-
     pos_player(Plyr, Board, Proposed),
     NewBoard = Board.
 ss_flip(Plyr, Board, Proposed, NewBoard) :- 
-    validmove(Plyr, Board, Proposed) -> 
+    pos_opponent(Plyr, Board, Proposed) -> 
         set(Board, NextBoard, Proposed, Plyr),
         ss(Proposed, SS),
         ss_flip(Plyr, NextBoard, SS, NewBoard);
@@ -293,7 +288,7 @@ se_flip(Plyr, Board, Proposed, NewBoard) :-
     pos_player(Plyr, Board, Proposed),
     NewBoard = Board.
 se_flip(Plyr, Board, Proposed, NewBoard) :- 
-    validmove(Plyr, Board, Proposed) -> 
+    pos_opponent(Plyr, Board, Proposed) -> 
         set(Board, NextBoard, Proposed, Plyr),
         se(Proposed, SE),
         se_flip(Plyr, NextBoard, SE, NewBoard);
@@ -428,51 +423,35 @@ se_valid(Plyr, Board, Proposed) :-
 % locations for 8 winds direction
 nw([X, Y], [NW_X, NW_Y]) :- 
     NW_X is X - 1,
-    NW_X >= 0,
-    NW_Y is Y - 1,
-    NW_Y >= 0.
+    NW_Y is Y - 1.
 
 nn([X, Y], [NN_X, NN_Y]) :- 
     NN_X is X + 0,
-    NN_X >= 0,
-    NN_Y is Y - 1,
-    NN_Y >= 0.
+    NN_Y is Y - 1.
 
 ne([X, Y],[NE_X, NE_Y]) :- 
     NE_X is X + 1,
-    NE_X < 6,
-    NE_Y is Y - 1,
-    NE_Y >= 0.
+    NE_Y is Y - 1.
 
 ww([X, Y], [WW_X, WW_Y]) :-
     WW_X is X - 1,
-    WW_X >= 0,
-    WW_Y is Y + 0,
-    WW_Y >= 0.
+    WW_Y is Y + 0.
 
 ee([X, Y], [EE_X, EE_Y]) :-
     EE_X is X + 1,
-    EE_X < 6,
-    EE_Y is Y + 0,
-    EE_Y >= 0.
+    EE_Y is Y + 0.
 
 sw([X, Y], [SW_X, SW_Y]) :- 
     SW_X is X - 1,
-    SW_X >= 0,
-    SW_Y is Y + 1,
-    SW_Y < 6.
+    SW_Y is Y + 1.
 
 ss([X, Y], [SS_X, SS_Y]) :- 
     SS_Y is Y + 1,
-    SS_Y < 6,
-    SS_X is X + 0,
-    SS_X >= 0.
+    SS_X is X + 0.
 
 se([X, Y], [SE_X, SE_Y]) :- 
     SE_X is X + 1,
-    SE_X < 6,
-    SE_Y is Y + 1,
-    SE_Y < 6.
+    SE_Y is Y + 1.
 
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
@@ -487,19 +466,19 @@ se([X, Y], [SE_X, SE_Y]) :-
 %          the value of state (see handout on ideas about
 %          good heuristics.
 
-h(State, -36) :-
-    winner(State, 1).
+h(Board, -36) :-
+    winner(Board, 1).
 
-h(State, 36) :-
-    winner(State, 2).
+h(Board, 36) :-
+    winner(Board, 2).
 
-h(State, 0) :-
-    tie(State).
+h(Board, 0) :-
+    tie(Board).
 
-h(State, Val) :-
-    score(State, 1, State1),
-    score(State, 2, State2),
-    Val is State2 - State1.
+h(Board, Val) :-
+    plyr_score(Board, 1, Plyr1),
+    plyr_score(Board, 2, Plyr2),
+    Val is Plyr2 - Plyr1.
 
 
 
