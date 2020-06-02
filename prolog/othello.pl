@@ -69,7 +69,7 @@
 % given helper: Inital state of the board
 
 initBoard([ [.,.,.,.,.,.], 
-            [.,.,...,.,.],
+            [.,.,.,.,.,.],
 	    [.,.,1,2,.,.], 
 	    [.,.,2,1,.,.], 
             [.,.,.,.,.,.], 
@@ -202,8 +202,8 @@ printList([H | L]) :-
 
 moves(Plyr, State, MvList) :- 
     findall([X, Y], validmove(Plyr, State, [X, Y]), MvListRes),
-    (MvListRes = [] ->  MvList = [n];
-    MvList = MvListRes).
+    (MvListRes = [] ->  MvList = [n], ! ;
+    MvList = MvListRes, ! ).
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
@@ -216,9 +216,9 @@ moves(Plyr, State, MvList) :-
 
 % Flips stones if move is valid
 nextState(Plyr, n, State, State, NextPlyr) :-
-    nextPlayer(Plyr, NextPlyr).
+    nextPlayer(Plyr, NextPlyr), !.
 nextState(Plyr, Move, State, NewState, NextPlyr) :-
-    validmove(Plyr, State, Move),
+    validmove(Plyr, State, Move), !,
       set(State, NextState, Move, Plyr),
       nw(Move, NW), nw_flip(Plyr, NextState, NW, StateNW),
       nn(Move, NN), nn_flip(Plyr, StateNW, NN, StateNN),
@@ -236,7 +236,7 @@ nextPlayer(2, 1).
 
 nw_flip(Plyr, Board, Proposed, NewBoard) :- 
     pos_player(Plyr, Board, Proposed),
-    NewBoard = Board.
+    NewBoard = Board, !.
 nw_flip(Plyr, Board, Proposed, NewBoard) :- 
     nw_valid(Plyr, Board, Proposed) ->
         set(Board, NextBoard, Proposed, Plyr),
@@ -246,7 +246,7 @@ nw_flip(Plyr, Board, Proposed, NewBoard) :-
 
 nn_flip(Plyr, Board, Proposed, NewBoard) :- 
     pos_player(Plyr, Board, Proposed),
-    NewBoard = Board.
+    NewBoard = Board, !.
 nn_flip(Plyr, Board, Proposed, NewBoard) :- 
     nn_valid(Plyr, Board, Proposed) -> 
         set(Board, NextBoard, Proposed, Plyr),
@@ -256,7 +256,7 @@ nn_flip(Plyr, Board, Proposed, NewBoard) :-
 
 ne_flip(Plyr, Board, Proposed, NewBoard) :- 
     pos_player(Plyr, Board, Proposed),
-    NewBoard = Board.
+    NewBoard = Board, !.
 ne_flip(Plyr, Board, Proposed, NewBoard) :- 
     ne_valid(Plyr, Board, Proposed) -> 
         set(Board, NextBoard, Proposed, Plyr),
@@ -266,7 +266,7 @@ ne_flip(Plyr, Board, Proposed, NewBoard) :-
 
 ww_flip(Plyr, Board, Proposed, NewBoard) :- 
     pos_player(Plyr, Board, Proposed),
-    NewBoard = Board.
+    NewBoard = Board, !.
 ww_flip(Plyr, Board, Proposed, NewBoard) :- 
     ww_valid(Plyr, Board, Proposed) -> 
         set(Board, NextBoard, Proposed, Plyr),
@@ -276,7 +276,7 @@ ww_flip(Plyr, Board, Proposed, NewBoard) :-
 
 ee_flip(Plyr, Board, Proposed, NewBoard) :- 
     pos_player(Plyr, Board, Proposed),
-    NewBoard = Board.
+    NewBoard = Board, !.
 ee_flip(Plyr, Board, Proposed, NewBoard) :- 
     ee_valid(Plyr, Board, Proposed) -> 
         set(Board, NextBoard, Proposed, Plyr),
@@ -286,7 +286,7 @@ ee_flip(Plyr, Board, Proposed, NewBoard) :-
 
 sw_flip(Plyr, Board, Proposed, NewBoard) :- 
     pos_player(Plyr, Board, Proposed),
-    NewBoard = Board.
+    NewBoard = Board, !.
 sw_flip(Plyr, Board, Proposed, NewBoard) :- 
     sw_valid(Plyr, Board, Proposed) -> 
         set(Board, NextBoard, Proposed, Plyr),
@@ -296,7 +296,7 @@ sw_flip(Plyr, Board, Proposed, NewBoard) :-
 
 ss_flip(Plyr, Board, Proposed, NewBoard) :- 
     pos_player(Plyr, Board, Proposed),
-    NewBoard = Board.
+    NewBoard = Board, !.
 ss_flip(Plyr, Board, Proposed, NewBoard) :- 
     ss_valid(Plyr, Board, Proposed) -> 
         set(Board, NextBoard, Proposed, Plyr),
@@ -306,7 +306,7 @@ ss_flip(Plyr, Board, Proposed, NewBoard) :-
 
 se_flip(Plyr, Board, Proposed, NewBoard) :- 
     pos_player(Plyr, Board, Proposed),
-    NewBoard = Board.
+    NewBoard = Board, !.
 se_flip(Plyr, Board, Proposed, NewBoard) :- 
     se_valid(Plyr, Board, Proposed) -> 
         set(Board, NextBoard, Proposed, Plyr),
@@ -359,7 +359,7 @@ pos_empty(Board, [X, Y]) :-
 nw_valid(Plyr, Board, Proposed) :- 
     nw(Proposed, NW),
     pos_opponent(Plyr, Board, Proposed),
-    pos_player(Plyr, Board, NW).
+    pos_player(Plyr, Board, NW), !.
 nw_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     nw(Proposed, NW),
@@ -368,7 +368,7 @@ nw_valid(Plyr, Board, Proposed) :-
 nn_valid(Plyr, Board, Proposed) :- 
     nn(Proposed, NN),
     pos_opponent(Plyr, Board, Proposed),
-    pos_player(Plyr, Board, NN).
+    pos_player(Plyr, Board, NN), !.
 nn_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     nn(Proposed, NN),
@@ -377,7 +377,7 @@ nn_valid(Plyr, Board, Proposed) :-
 ne_valid(Plyr, Board, Proposed) :- 
     ne(Proposed, NE),
     pos_opponent(Plyr, Board, Proposed),
-    pos_player(Plyr, Board, NE).
+    pos_player(Plyr, Board, NE), !.
 ne_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     ne(Proposed, NE),
@@ -386,7 +386,7 @@ ne_valid(Plyr, Board, Proposed) :-
 ww_valid(Plyr, Board, Proposed) :- 
     ww(Proposed, WW),
     pos_opponent(Plyr, Board, Proposed),
-    pos_player(Plyr, Board, WW).
+    pos_player(Plyr, Board, WW), !.
 ww_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     ww(Proposed, WW),
@@ -395,7 +395,7 @@ ww_valid(Plyr, Board, Proposed) :-
 ee_valid(Plyr, Board, Proposed) :- 
     ee(Proposed, EE),
     pos_opponent(Plyr, Board, Proposed),
-    pos_player(Plyr, Board, EE).
+    pos_player(Plyr, Board, EE), !.
 ee_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     ee(Proposed, EE),
@@ -404,7 +404,7 @@ ee_valid(Plyr, Board, Proposed) :-
 sw_valid(Plyr, Board, Proposed) :-
     sw(Proposed, SW),
     pos_opponent(Plyr, Board, Proposed),
-    pos_player(Plyr, Board, SW).
+    pos_player(Plyr, Board, SW), !.
 sw_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     sw(Proposed, SW),
@@ -413,7 +413,7 @@ sw_valid(Plyr, Board, Proposed) :-
 ss_valid(Plyr, Board, Proposed) :-
     ss(Proposed, SS),
     pos_opponent(Plyr, Board, Proposed),
-    pos_player(Plyr, Board, SS).
+    pos_player(Plyr, Board, SS), !.
 ss_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     ss(Proposed, SS),
@@ -422,7 +422,7 @@ ss_valid(Plyr, Board, Proposed) :-
 se_valid(Plyr, Board, Proposed) :- 
     se(Proposed, SE),
     pos_opponent(Plyr, Board, Proposed),
-    pos_player(Plyr, Board, SE).
+    pos_player(Plyr, Board, SE), !.
 se_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     se(Proposed, SE),
