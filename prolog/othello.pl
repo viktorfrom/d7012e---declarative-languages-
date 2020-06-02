@@ -11,9 +11,9 @@
 
 
 %do not change the following line!
-:- ensure_loaded('play.pl').
-%:- ensure_loaded('stupid.pl').
-%:- ensure_loaded('testboards2.pl').
+%:- ensure_loaded('play.pl').
+:- ensure_loaded('stupid.pl').
+%:- ensure_loaded('testboards.pl').
 
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
@@ -69,7 +69,7 @@
 % given helper: Inital state of the board
 
 initBoard([ [.,.,.,.,.,.], 
-            [.,.,.,.,.,.],
+            [.,.,...,.,.],
 	    [.,.,1,2,.,.], 
 	    [.,.,2,1,.,.], 
             [.,.,.,.,.,.], 
@@ -82,11 +82,32 @@ initBoard([ [.,.,.,.,.,.],
 %%%  holds iff InitialState is the initial state and 
 %%%  InitialPlyr is the player who moves first. 
 
-% initialize(Board, 1) :- initBoard(Board).
+initialize(Board, 1) :- initBoard(Board).
+
+% initialize(Board, 1) :- testBoard1(Board).
+% initialize(Board, 1) :- testBoard2(Board).
+% initialize(Board, 1) :- testBoard3(Board).
+% initialize(Board, 1) :- flipRLtop(Board).
+% initialize(Board, 1) :- flipLRbottom(Board).
+% initialize(Board, 1) :- flipTBleft(Board).
+% initialize(Board, 1) :- flipBTright(Board).
+% initialize(Board, 1) :- flipDiagULtoLR(Board).
+% initialize(Board, 1) :- flipDiagURtoLL(Board).
+% initialize(Board, 1) :- noMovesNoFlipsA(Board).
+% initialize(Board, 1) :- noMovesNoFlipsB(Board).
+% initialize(Board, 1) :- flipLRonly1(Board).
+% initialize(Board, 1) :- flipAll8Dirs1(Board).
+% initialize(Board, 1) :- flipAll8Dirs2(Board).
+% initialize(Board, 1) :- tieInTwoMovesFullBoard(Board).
+% initialize(Board, 1) :- tieFourEmptyInCorners(Board).
+% initialize(Board, 1) :- tieFourEmptyOnly1canMove(Board).
+% initialize(Board, 1) :- tie30emptyOnly1canMove(Board).
+% initialize(Board, 1) :- tie30emptyOnly2canMove(Board).
+% initialize(Board, 1) :- winInTwoMovesFullBoard(Board).
+% initialize(Board, 1) :- onlyTwos(Board).
+% initialize(Board, 1) :- onlyOnes(Board).
 % initialize(Board, 1) :- forcing2toDoNullMove(Board).
 % initialize(Board, 1) :- forcing1toDoNullMoves(Board).
-
-
 
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
@@ -115,8 +136,8 @@ occurences(Atom, Ch, N) :-
 
 min(X, Y, Z) :-
     (X >= Y
-    -> Z = 1
-    ;Z = 2).
+    -> Z = 2
+    ;Z = 1).
 
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
@@ -335,49 +356,73 @@ pos_empty(Board, [X, Y]) :-
     Value = '.'.
 
 % Check valid directions
-nw_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
+nw_valid(Plyr, Board, Proposed) :- 
+    nw(Proposed, NW),
+    pos_opponent(Plyr, Board, Proposed),
+    pos_player(Plyr, Board, NW).
 nw_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     nw(Proposed, NW),
     nw_valid(Plyr, Board, NW).
 
-nn_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
+nn_valid(Plyr, Board, Proposed) :- 
+    nn(Proposed, NN),
+    pos_opponent(Plyr, Board, Proposed),
+    pos_player(Plyr, Board, NN).
 nn_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     nn(Proposed, NN),
     nn_valid(Plyr, Board, NN).
 
-ne_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
+ne_valid(Plyr, Board, Proposed) :- 
+    ne(Proposed, NE),
+    pos_opponent(Plyr, Board, Proposed),
+    pos_player(Plyr, Board, NE).
 ne_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     ne(Proposed, NE),
     ne_valid(Plyr, Board, NE).
 
-ww_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
+ww_valid(Plyr, Board, Proposed) :- 
+    ww(Proposed, WW),
+    pos_opponent(Plyr, Board, Proposed),
+    pos_player(Plyr, Board, WW).
 ww_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     ww(Proposed, WW),
     ww_valid(Plyr, Board, WW).
 
-ee_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
+ee_valid(Plyr, Board, Proposed) :- 
+    ee(Proposed, EE),
+    pos_opponent(Plyr, Board, Proposed),
+    pos_player(Plyr, Board, EE).
 ee_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     ee(Proposed, EE),
     ee_valid(Plyr, Board, EE).
 
-sw_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
+sw_valid(Plyr, Board, Proposed) :-
+    sw(Proposed, SW),
+    pos_opponent(Plyr, Board, Proposed),
+    pos_player(Plyr, Board, SW).
 sw_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     sw(Proposed, SW),
     sw_valid(Plyr, Board, SW).
 
-ss_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
+ss_valid(Plyr, Board, Proposed) :-
+    ss(Proposed, SS),
+    pos_opponent(Plyr, Board, Proposed),
+    pos_player(Plyr, Board, SS).
 ss_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     ss(Proposed, SS),
     ss_valid(Plyr, Board, SS).
 
-se_valid(Plyr, Board, Proposed) :- pos_player(Plyr, Board, Proposed).
+se_valid(Plyr, Board, Proposed) :- 
+    se(Proposed, SE),
+    pos_opponent(Plyr, Board, Proposed),
+    pos_player(Plyr, Board, SE).
 se_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     se(Proposed, SE),
