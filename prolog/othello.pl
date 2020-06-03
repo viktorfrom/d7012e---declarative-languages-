@@ -199,11 +199,17 @@ printList([H | L]) :-
 
 % initialize(B, 1), showState(B), moves(1, B, R), length(R, L).
 
-moves(Plyr, State, MvList) :- 
+moves(Plyr, State, [n]) :- 
     findall([X, Y], validmove(Plyr, State, [X, Y]), MvListRes),
-    (MvListRes = [] ->  MvList = [n], !;
-    MvList = MvListRes, !).
+    length(MvListRes, Len),
+    Len =:= 0.
 
+moves(Plyr, State, MvList) :-
+    setof([X, Y], validmove(Plyr, State, [X,Y]), MvListRes),
+    length(MvListRes, Len),
+    Len \= 0,
+    sort(0, @<, MvListRes, MvList).
+	
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
 %%%%%%%%%%%%%%nextState(Plyr,Move,State,NewState,NextPlyr)%%%%%%%%%%%%%%%%%%%%
