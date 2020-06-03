@@ -11,9 +11,9 @@
 
 
 %do not change the following line!
-%:- ensure_loaded('play.pl').
+% :- ensure_loaded('play.pl').
 :- ensure_loaded('stupid.pl').
-%:- ensure_loaded('testboards.pl').
+% :- ensure_loaded('testboards.pl').
 
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
@@ -83,14 +83,13 @@ initBoard([ [.,.,.,.,.,.],
 %%%  InitialPlyr is the player who moves first. 
 
 initialize(Board, 1) :- initBoard(Board).
-
 % initialize(Board, 1) :- testBoard1(Board).
 % initialize(Board, 1) :- testBoard2(Board).
 % initialize(Board, 1) :- testBoard3(Board).
 % initialize(Board, 1) :- flipRLtop(Board).
 % initialize(Board, 1) :- flipLRbottom(Board).
 % initialize(Board, 1) :- flipTBleft(Board).
-% initialize(Board, 1) :- flipBTright(Board).
+% initialize(Board, 1) :- flipBTright(Board)
 % initialize(Board, 1) :- flipDiagULtoLR(Board).
 % initialize(Board, 1) :- flipDiagURtoLL(Board).
 % initialize(Board, 1) :- noMovesNoFlipsA(Board).
@@ -202,8 +201,8 @@ printList([H | L]) :-
 
 moves(Plyr, State, MvList) :- 
     findall([X, Y], validmove(Plyr, State, [X, Y]), MvListRes),
-    (MvListRes = [] ->  MvList = [n], ! ;
-    MvList = MvListRes, ! ).
+    (MvListRes = [] ->  MvList = [n], !;
+    MvList = MvListRes, !).
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
@@ -323,9 +322,10 @@ se_flip(Plyr, Board, Proposed, NewBoard) :-
 
 % Check if move is valid
 
-validmove(Plyr, State, n) :-
+validmove(Plyr, State, Proposed) :-
+   Proposed = n,
    moves(Plyr, State, MvList),
-   member(n, MvList).
+   member(Proposed, MvList).
 
 validmove(Plyr, State, Proposed) :-
    pos_empty(State, Proposed),
@@ -348,7 +348,7 @@ pos_player(Plyr, Board, [X, Y]) :-
 % Check if pos has opponents stone
 pos_opponent(Plyr, Board, [X, Y]) :- 
     get(Board, [X, Y], Value),
-    (Plyr = 1 -> Value = 2 ;Value = 1).
+    (Plyr = 1 -> Value = 2, !; Value = 1, !).
 
 % Check if pos is empty
 pos_empty(Board, [X, Y]) :- 
@@ -359,7 +359,7 @@ pos_empty(Board, [X, Y]) :-
 nw_valid(Plyr, Board, Proposed) :- 
     nw(Proposed, NW),
     pos_opponent(Plyr, Board, Proposed),
-    pos_player(Plyr, Board, NW), !.
+    pos_player(Plyr, Board, NW).
 nw_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     nw(Proposed, NW),
@@ -368,7 +368,7 @@ nw_valid(Plyr, Board, Proposed) :-
 nn_valid(Plyr, Board, Proposed) :- 
     nn(Proposed, NN),
     pos_opponent(Plyr, Board, Proposed),
-    pos_player(Plyr, Board, NN), !.
+    pos_player(Plyr, Board, NN).
 nn_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     nn(Proposed, NN),
@@ -377,7 +377,7 @@ nn_valid(Plyr, Board, Proposed) :-
 ne_valid(Plyr, Board, Proposed) :- 
     ne(Proposed, NE),
     pos_opponent(Plyr, Board, Proposed),
-    pos_player(Plyr, Board, NE), !.
+    pos_player(Plyr, Board, NE).
 ne_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     ne(Proposed, NE),
@@ -386,7 +386,7 @@ ne_valid(Plyr, Board, Proposed) :-
 ww_valid(Plyr, Board, Proposed) :- 
     ww(Proposed, WW),
     pos_opponent(Plyr, Board, Proposed),
-    pos_player(Plyr, Board, WW), !.
+    pos_player(Plyr, Board, WW).
 ww_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     ww(Proposed, WW),
@@ -395,7 +395,7 @@ ww_valid(Plyr, Board, Proposed) :-
 ee_valid(Plyr, Board, Proposed) :- 
     ee(Proposed, EE),
     pos_opponent(Plyr, Board, Proposed),
-    pos_player(Plyr, Board, EE), !.
+    pos_player(Plyr, Board, EE).
 ee_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     ee(Proposed, EE),
@@ -404,7 +404,7 @@ ee_valid(Plyr, Board, Proposed) :-
 sw_valid(Plyr, Board, Proposed) :-
     sw(Proposed, SW),
     pos_opponent(Plyr, Board, Proposed),
-    pos_player(Plyr, Board, SW), !.
+    pos_player(Plyr, Board, SW).
 sw_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     sw(Proposed, SW),
@@ -413,7 +413,7 @@ sw_valid(Plyr, Board, Proposed) :-
 ss_valid(Plyr, Board, Proposed) :-
     ss(Proposed, SS),
     pos_opponent(Plyr, Board, Proposed),
-    pos_player(Plyr, Board, SS), !.
+    pos_player(Plyr, Board, SS).
 ss_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     ss(Proposed, SS),
@@ -422,7 +422,7 @@ ss_valid(Plyr, Board, Proposed) :-
 se_valid(Plyr, Board, Proposed) :- 
     se(Proposed, SE),
     pos_opponent(Plyr, Board, Proposed),
-    pos_player(Plyr, Board, SE), !.
+    pos_player(Plyr, Board, SE).
 se_valid(Plyr, Board, Proposed) :- 
     pos_opponent(Plyr, Board, Proposed),
     se(Proposed, SE),
@@ -474,10 +474,10 @@ se([X, Y], [SE_X, SE_Y]) :-
 %          the value of state (see handout on ideas about
 %          good heuristics.
 
-h(Board, -36) :-
+h(Board, -100) :-
     winner(Board, 1).
 
-h(Board, 36) :-
+h(Board, 100) :-
     winner(Board, 2).
 
 h(Board, 0) :-
@@ -498,7 +498,7 @@ h(Board, Val) :-
 %   - returns a value B that is less than the actual or heuristic value
 %     of all states.
 
-lowerBound(-37).
+lowerBound(-101).
 
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
@@ -510,7 +510,7 @@ lowerBound(-37).
 %     of all states.
 
 
-upperBound(37).
+upperBound(101).
 
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
