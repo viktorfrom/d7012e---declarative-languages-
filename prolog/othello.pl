@@ -14,7 +14,7 @@
 % :- ensure_loaded('play.pl').
 :- ensure_loaded('stupid.pl').
 % :- ensure_loaded('testboards.pl').
-
+:- ensure_loaded('rndBoard.pl').
 
 % DO NOT CHANGE THIS BLOCK OF COMMENTS.
 %
@@ -83,6 +83,7 @@ initBoard([ [.,.,.,.,.,.],
 %%%  InitialPlyr is the player who moves first. 
 
 initialize(Board, 1) :- initBoard(Board).
+% initialize(Board, 1) :- rndBoardXYZ(Board).
 % initialize(Board, 1) :- testBoard1(Board).
 % initialize(Board, 1) :- testBoard2(Board).
 % initialize(Board, 1) :- testBoard3(Board).
@@ -134,7 +135,7 @@ occurences(Atom, Ch, N) :-
     aggregate_all(count, sub_atom(Atom, _,_,_, Ch), N).
 
 min(X, Y, Z) :-
-    (X >= Y
+    (X > Y
     -> Z = 2
     ;Z = 1).
 
@@ -336,14 +337,14 @@ validmove(Plyr, State, Proposed) :-
 validmove(Plyr, State, Proposed) :-
    pos_empty(State, Proposed),
    (
-     nw(Proposed, NW), nw_valid(Plyr, State, NW);
-     nn(Proposed, NN), nn_valid(Plyr, State, NN);
-     ne(Proposed, NE), ne_valid(Plyr, State, NE);
-     ww(Proposed, WW), ww_valid(Plyr, State, WW);
-     ee(Proposed, EE), ee_valid(Plyr, State, EE);
-     sw(Proposed, SW), sw_valid(Plyr, State, SW);
-     ss(Proposed, SS), ss_valid(Plyr, State, SS);
-     se(Proposed, SE), se_valid(Plyr, State, SE)
+     nw(Proposed, NW), nw_valid(Plyr, State, NW), !;
+     nn(Proposed, NN), nn_valid(Plyr, State, NN), !;
+     ne(Proposed, NE), ne_valid(Plyr, State, NE), !;
+     ww(Proposed, WW), ww_valid(Plyr, State, WW), !;
+     ee(Proposed, EE), ee_valid(Plyr, State, EE), !;
+     sw(Proposed, SW), sw_valid(Plyr, State, SW), !;
+     ss(Proposed, SS), ss_valid(Plyr, State, SS), !;
+     se(Proposed, SE), se_valid(Plyr, State, SE), !
    ).
 
 % Check if pos has players stone
@@ -480,10 +481,10 @@ se([X, Y], [SE_X, SE_Y]) :-
 %          the value of state (see handout on ideas about
 %          good heuristics.
 
-h(Board, -100) :-
+h(Board, 100) :-
     winner(Board, 1).
 
-h(Board, 100) :-
+h(Board, -100) :-
     winner(Board, 2).
 
 h(Board, 0) :-
